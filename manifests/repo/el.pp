@@ -1,4 +1,4 @@
-# == Class: zfsonlinux
+# == Class: zfsonlinux::repo::el
 #
 # Full description of class zfsonlinux here.
 #
@@ -35,28 +35,16 @@
 #
 # Copyright 2013 Trey Dockendorf
 #
-class zfsonlinux (
-  $zfs_package_name       = $zfsonlinux::params::zfs_package_name,
-  $zfs_service_name       = $zfsonlinux::params::zfs_service_name
+class zfsonlinux::repo::el {
 
-) inherits zfsonlinux::params {
+  include zfsonlinux::params
 
-  include zfsonlinux::repo
+  $repo_source_url = $zfsonlinux::params::repo_source_url
 
-  $package_dependencies = $zfsonlinux::params::package_dependencies
-  ensure_packages($package_dependencies)
-
-  package { 'zfs':
-    ensure  => 'installed',
-    name    => $zfs_package_name,
-    require => Class['zfsonlinux::repo'],
-  }
-
-  service { 'zfs':
-    ensure  => undef,
-    enable  => true,
-    name    => $zfs_service_name,
-    require => Package['zfs'],
+  package { 'zfs-release':
+    ensure    => 'installed',
+    source    => $repo_source_url,
+    provider  => 'rpm',
   }
 
 }
