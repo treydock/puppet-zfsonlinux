@@ -16,9 +16,11 @@ class zfsonlinux::params {
 
   case $::osfamily {
     'RedHat': {
-      $zfs_package_name     = 'zfs'
-      $zfs_service_name     = 'zfs'
-      $package_dependencies = [
+      $zfs_package_name       = 'zfs'
+      $zfs_service_name       = 'zfs'
+      $zfs_service_hasstatus  = true
+      $zfs_service_hasrestart = true
+      $package_dependencies   = [
         'kernel-devel',
         'gcc',
         'make',
@@ -27,12 +29,13 @@ class zfsonlinux::params {
 
       case $::operatingsystem {
         /Scientific/: {
-          $repo_class       = 'zfsonlinux::repo::sl'
+          $repo_class         = 'zfsonlinux::repo::sl'
+          $repo_source_url    = undef
         }
 
         default: {
-          $repo_class       = 'zfsonlinux::repo::el'
-          $repo_source_url  = 'http://archive.zfsonlinux.org/epel/zfs-release-1-2.el6.noarch.rpm'
+          $repo_class         = 'zfsonlinux::repo::el'
+          $repo_source_url    = 'http://archive.zfsonlinux.org/epel/zfs-release-1-2.el6.noarch.rpm'
         }
       }
     }

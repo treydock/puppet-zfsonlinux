@@ -1,11 +1,11 @@
 name    'treydock-zfsonlinux'
 version '0.0.1'
-source 'UNKNOWN'
+source 'git://github.com/treydock/puppet-zfsonlinux.git'
 author 'treydock'
 license 'Apache License, Version 2.0'
-summary 'UNKNOWN'
-description 'UNKNOWN'
-project_page 'UNKNOWN'
+summary 'zfsonlinux puppet module'
+description 'zfsonlinux puppet module'
+project_page 'http://github.com/treydock/puppet-zfsonlinux'
 
 ## Add dependencies, if any:
-# dependency 'username/name', '>= 1.2.0'
+dependency 'puppetlabs/stdlib', '>= 3.2.0'

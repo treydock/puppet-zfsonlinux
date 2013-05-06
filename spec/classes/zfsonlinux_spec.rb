@@ -2,55 +2,61 @@ require 'spec_helper'
 
 describe 'zfsonlinux' do
 
-  package_dependencies = [
-    'kernel-devel',
-    'gcc',
-    'make',
-    'perl',
-  ]
+  shared_context :shared_zfsonlinux_context do
+    it { should contain_class('zfsonlinux::params') }
+    it { should contain_class('zfsonlinux::repo') }
 
-  let(:facts) do
-    {
-      :osfamily         => 'RedHat',
-      :operatingsystem  => 'CentOS',
-    }
+    it { should contain_package('kernel-devel').with({ 'ensure' => 'present' }) }
+    it { should contain_package('gcc').with({ 'ensure' => 'present' }) }
+    it { should contain_package('make').with({ 'ensure' => 'present' }) }
+    it { should contain_package('perl').with({ 'ensure' => 'present' }) }
+
+    it do
+      should contain_package('zfs').with({
+        'ensure'  => 'installed',
+    	  'name'    => 'zfs',
+    	  'require' => 'Class[Zfsonlinux::Repo]',
+      })
+    end
+  
+    it do
+      should contain_service('zfs').with({
+        'ensure'      => 'running',
+    	  'enable'      => 'true',
+        'hasstatus'   => 'true',
+        'hasrestart'  => 'true',
+    	  'name'        => 'zfs',
+    	  'require'     => 'Package[zfs]',
+      })
+    end    
   end
+
   
-  it { should contain_class('zfsonlinux::params') }
-  it { should contain_class('zfsonlinux::repo') }
-  it { should contain_class('zfsonlinux::repo::el') }    
-  it { should_not contain_class('zfsonlinux::repo::sl') }    
+  context 'Enterprise Linux' do
+    it_behaves_like :shared_zfsonlinux_context
+
+    let(:facts) do
+      {
+        :osfamily         => 'RedHat',
+        :operatingsystem  => 'CentOS',
+      }
+    end
+
+    it { should contain_class('zfsonlinux::repo::el') }    
+    it { should_not contain_class('zfsonlinux::repo::sl') }
   
-  package_dependencies.each do |package_dependency|
-    it { should contain_package(package_dependency).with({ 'ensure' => 'present' }) }
-  end
-  
-  it do
-    should contain_package('zfs-release').with({
-      'ensure'    => 'installed',
-      'source'    => 'http://archive.zfsonlinux.org/epel/zfs-release-1-2.el6.noarch.rpm',
-      'provider'  => 'rpm',
-    })
-  end
-  
-  it do
-    should contain_package('zfs').with({
-      'ensure'  => 'installed',
-  	  'name'    => 'zfs',
-  	  'require' => 'Class[Zfsonlinux::Repo]',
-    })
-  end
-  
-  it do
-    should contain_service('zfs').with({
-      'ensure'  => nil,
-  	  'enable'  => 'true',
-  	  'name'    => 'zfs',
-  	  'require' => 'Package[zfs]',
-    })
+    it do
+      should contain_package('zfs-release').with({
+        'ensure'    => 'installed',
+        'source'    => 'http://archive.zfsonlinux.org/epel/zfs-release-1-2.el6.noarch.rpm',
+        'provider'  => 'rpm',
+      })
+    end
   end
   
   context 'Scientific Linux' do
+    it_behaves_like :shared_zfsonlinux_context
+
     let(:facts) do
       {
         :osfamily         => 'RedHat',
@@ -60,7 +66,7 @@ describe 'zfsonlinux' do
     
     it { should contain_class('zfsonlinux::repo::sl') }    
     it { should_not contain_class('zfsonlinux::repo::el') }
-    
+
     it { should_not contain_package('zfs-release') }
     
     it do

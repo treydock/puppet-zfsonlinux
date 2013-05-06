@@ -1,6 +1,21 @@
 require 'rspec-system/spec_helper'
 require 'rspec-system-puppet/helpers'
 
+module RSpecSystem
+  class NodeSet::Vagrant
+    def teardown
+       log.info "[Vagrant#teardown] closing all ssh channels"
+       RSpec.configuration.ssh_channels.each do |k,v|
+         v.close unless v.closed?
+       end
+
+       log.info "[Vagrant#teardown] SKIPPING 'vagrant destroy'"
+#       vagrant("destroy --force")
+       nil
+     end
+   end
+ end
+
 RSpec.configure do |c|
   # Project root for the firewall code
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
