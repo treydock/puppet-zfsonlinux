@@ -1,4 +1,4 @@
-# puppet-zfsonlinux
+# puppet-zfsonlinux [![Build Status](https://travis-ci.org/treydock/puppet-zfsonlinux.png)](https://travis-ci.org/treydock/puppet-zfsonlinux)
 
 Installs zfsonlinux repositories and packages.
 
@@ -31,6 +31,6 @@ Installs zfsonlinux repositories and packages.
 
 For active development the `DESTROY=no` environment variable can be passed to keep the Vagrant VM from being destroyed after a test run.
 
-DESTROY=no bundle exec rake spec:system
+    DESTROY=no bundle exec rake spec:system
 
 
