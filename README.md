@@ -1,4 +1,13 @@
-# zfsonlinux module for Puppet
+# puppet-zfsonlinux
+
+## Support
+
+* CentOS 6.4 x86_64 (Vagrant only)
+* Scientific Linux 6.4 x86_64
+
+## Usage
+
+    class { 'zfsonlinux': }
 
 ## Dependencies
 
