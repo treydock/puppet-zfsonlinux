@@ -22,9 +22,15 @@ Installs zfsonlinux repositories and packages.
 ### Unit testing
 
 1. To install dependencies run `bundle install`
-2. Run tests using `rake spec:all`
+2. Run tests using `bundle exec rake spec:all`
 
 ### Vagrant system tests
 
 1. Have Vagrant >= 1.2.0 installed
-2. Run tests using `rake spec:system`
+2. Run tests using `bundle exec rake spec:system`
+
+For active development the `DESTROY=no` environment variable can be passed to keep the Vagrant VM from being destroyed after a test run.
+
+DESTROY=no bundle exec rake spec:system
+
+
