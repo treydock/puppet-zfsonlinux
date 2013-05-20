@@ -1,31 +1,24 @@
 # == Class: zfsonlinux
 #
-# Full description of class zfsonlinux here.
+# Adds zfs to Linux systems using the zfsonlinux project.
 #
 # === Parameters
 #
-# Document parameters here.
+# [*zfs_package_name*]
+#   Default:  $zfsonlinux::params::zfs_package_name,
 #
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*zfs_service_name*]
+#   Default:  $zfsonlinux::params::zfs_service_name,
 #
-# === Variables
+# [*zfs_service_hasstatus*]
+#   Default:  $zfsonlinux::params::zfs_service_hasstatus,
 #
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if it
-#   has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should not be used in preference to class parameters  as of
-#   Puppet 2.6.)
+# [*zfs_service_hasrestart*]
+#   Default:  $zfsonlinux::params::zfs_service_hasrestart
 #
 # === Examples
 #
-#  class { zfsonlinux:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ]
-#  }
+#  class { 'zfsonlinux': }
 #
 # === Authors
 #
