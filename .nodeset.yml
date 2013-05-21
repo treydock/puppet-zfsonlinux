@@ -5,3 +5,7 @@ sets:
     nodes:
       'main.vm':
         prefab: 'centos-64-x64'
+  'scientific-64-x64':
+    nodes:
+      'main.vm':
+        prefab: 'scientific-64-x64'
