@@ -1,9 +1,11 @@
+dir = File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH.unshift File.join(dir, 'lib')
+
 require 'puppetlabs_spec_helper/module_spec_helper'
+require 'monkey_patches/alias_should_to_must'
 
 RSpec.configure do |c|
   c.include PuppetlabsSpec::Files
-
-  c.formatter = :documentation
 
   c.add_setting :default_facts, :default => {}
   c.default_facts = {

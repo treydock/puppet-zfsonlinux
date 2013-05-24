@@ -32,7 +32,7 @@ module Puppet
   newtype(:zpool) do
     @doc = "Manage zpools. Create and delete zpools. The provider WILL NOT SYNC, only report differences.
 
-      Supports vdevs with mirrors, raidz, logs and spares."
+      Supports vdevs with mirrors, raidz, logs, cache and spares."
 
     ensurable
 
@@ -74,6 +74,26 @@ module Puppet
       desc "Log disks for this pool. This type does not currently support mirroring of log disks."
     end
 
+    newproperty(:log_mirror, :array_matching => :all, :parent => Puppet::Property::MultiVDev) do
+      desc "Log disks for this pool that will be mirrored.  Should be a space seperated string
+      or an Array:
+      
+          log_mirror => [\"disk1\", \"disk2\"],
+          
+          log_mirror => \"disk1 disk2\",
+      "
+      
+      validate do |value|
+        if value.include?(",") # or not value.is_a?(Array)
+          raise ArgumentError, "log_mirror names must be provided as string separated, not a comma-separated list, or an Array."
+        end
+      end
+    end
+
+    newproperty(:cache, :array_matching => :all, :parent => Puppet::Property::VDev) do
+      desc "Cache disks for this pool."
+    end
+
     newparam(:pool) do
       desc "The name for this pool."
       isnamevar
@@ -81,6 +101,12 @@ module Puppet
 
     newparam(:raid_parity) do
       desc "Determines parity when using the `raidz` parameter."
+    end
+
+    newparam(:force, :boolean => true) do
+      desc "Determines if the zpool create command will force use of devices without an EFI label"
+
+      defaultto false
     end
 
     validate do

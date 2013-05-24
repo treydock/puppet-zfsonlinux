@@ -81,8 +81,22 @@ describe Puppet::Type.type(:zpool).provider(:zpool) do
 
     describe "when there are two logs" do
       it "should add the log disks to the hash as a single string" do
-        zpool_data.concat ["spares", "spare_disk", "spare_disk2"]
-        provider.process_zpool_data(zpool_data)[:spare].should == ["spare_disk spare_disk2"]
+        zpool_data.concat ["logs", "log_disk", "log_disk2"]
+        provider.process_zpool_data(zpool_data)[:log].should == ["log_disk log_disk2"]
+      end
+    end
+
+    describe "when there is a cache" do
+      it "should add the cache disk to the hash" do
+        zpool_data.concat ["cache", "cache_disk"]
+        provider.process_zpool_data(zpool_data)[:cache].should == ["cache_disk"]
+      end
+    end
+
+    describe "when there are two cache disks" do
+      it "should add the cache disks to the hash as a single string" do
+        zpool_data.concat ["cache", "cache_disk", "cache_disk2"]
+        provider.process_zpool_data(zpool_data)[:cache].should == ["cache_disk cache_disk2"]
       end
     end
 
@@ -148,7 +162,7 @@ describe Puppet::Type.type(:zpool).provider(:zpool) do
   end
 
   describe "when calling the getters and setters" do
-    [:disk, :mirror, :raidz, :log, :spare].each do |field|
+    [:disk, :mirror, :raidz, :log, :cache, :spare].each do |field|
       describe "when calling #{field}" do
         it "should get the #{field} value from the current_pool hash" do
           pool_hash = {}
@@ -180,10 +194,11 @@ describe Puppet::Type.type(:zpool).provider(:zpool) do
       provider.create
     end
 
-    it "should call create with the 'spares' and 'log' values" do
+    it "should call create with the 'spares', 'log' and 'cache' values" do
       resource[:spare] = ['value1']
       resource[:log] = ['value2']
-      provider.expects(:zpool).with(:create, name, 'disk1', 'spare', 'value1', 'log', 'value2')
+      resource[:cache] = ['value3']
+      provider.expects(:zpool).with(:create, name, 'disk1', 'spare', 'value1', 'log', 'value2', 'cache', 'value3')
       provider.create
     end
   end

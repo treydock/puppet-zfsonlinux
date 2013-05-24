@@ -21,15 +21,18 @@ Puppet::Type.type(:zpool).provide(:zpool) do
     pool_array.shift
 
     tmp = []
-
     #order matters here :(
-    pool_array.reverse.each do |value|
+    pool_array.reverse.each_with_index do |value, index|
       sym = nil
       case value
       when "spares";
-        sym = :spare
+        sym = :spare 
+      when "logs_mirror";
+        sym = :log_mirror
       when "logs";
         sym = :log
+      when "cache";
+        sym = :cache
       when /^mirror|^raidz1|^raidz2/;
         sym = value =~ /^mirror/ ? :mirror : :raidz
         pool[:raid_parity] = "raidz2" if value =~ /^raidz2/
@@ -43,7 +46,6 @@ Puppet::Type.type(:zpool).provide(:zpool) do
         tmp.clear
       end
     end
-
     pool
   end
 
@@ -53,6 +55,10 @@ Puppet::Type.type(:zpool).provide(:zpool) do
     out = execute("zpool status #{@resource[:pool]}", :failonfail => false, :combine => false)
     zpool_data = out.lines.select { |line| line.index("\t") == 0 }.collect { |l| l.strip.split("\s")[0] }
     zpool_data.shift
+    if log_index = zpool_data.index("logs") and zpool_data.at(log_index+1) =~ /^mirror/
+      zpool_data.delete_at(log_index+1)
+      zpool_data[log_index] = "logs_mirror"
+    end
     zpool_data
   end
 
@@ -65,10 +71,22 @@ Puppet::Type.type(:zpool).provide(:zpool) do
     @current_pool= nil
   end
 
-  #Adds log and spare
+  def force
+    @resource[:force] ? "-f" : ""
+  end
+
+  #Adds log, cache and spare
   def build_named(name)
     if prop = @resource[name.intern]
       [name] + prop.collect { |p| p.split(' ') }.flatten
+    else
+      []
+    end
+  end
+
+  def build_log_mirror
+    if log_mirror = @resource[:log_mirror]
+      ["log"] + ["mirror"] + log_mirror
     else
       []
     end
@@ -84,14 +102,14 @@ Puppet::Type.type(:zpool).provide(:zpool) do
     if disk = @resource[:disk]
       disk.collect { |d| d.split(' ') }.flatten
     elsif mirror = @resource[:mirror]
-      ["mirror"] +  mirror
+      mirror.map { |m| ["mirror"] +  [m] }
     elsif raidz = @resource[:raidz]
-      [raidzarity] + raidz
+      raidz.map { |r| [raidzarity] + [r] }
     end
   end
 
   def create
-    zpool(*([:create, @resource[:pool]] + build_vdevs + build_named("spare") + build_named("log")))
+    zpool(*([:create, force, @resource[:pool]] + build_vdevs + build_log_mirror + build_named("spare") + build_named("log") + build_named("cache")))
   end
 
   def destroy
@@ -106,8 +124,9 @@ Puppet::Type.type(:zpool).provide(:zpool) do
     end
   end
 
-  [:disk, :mirror, :raidz, :log, :spare].each do |field|
+  [:disk, :mirror, :raidz, :log, :log_mirror, :cache, :spare].each do |field|
     define_method(field) do
+      Puppet.debug("#{field} -> #{current_pool[field]}")
       current_pool[field]
     end
 
