@@ -3,6 +3,8 @@ Puppet::Type.type(:zpool).provide(:zpool) do
 
   commands :zpool => 'zpool'
 
+  defaultfor :kernel => [:sunos, :linux]
+
   #NAME    SIZE  ALLOC   FREE    CAP  HEALTH  ALTROOT
   def self.instances
     zpool(:list, '-H').split("\n").collect do |line|
