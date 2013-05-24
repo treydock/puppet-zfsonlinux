@@ -1,7 +1,7 @@
 Puppet::Type.type(:zpool).provide(:zpool) do
   desc "Provider for zpool."
 
-  commands :zpool => '/sbin/zpool'
+  commands :zpool => 'zpool'
 
   #NAME    SIZE  ALLOC   FREE    CAP  HEALTH  ALTROOT
   def self.instances
