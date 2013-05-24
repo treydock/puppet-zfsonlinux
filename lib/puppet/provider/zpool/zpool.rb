@@ -72,7 +72,7 @@ Puppet::Type.type(:zpool).provide(:zpool) do
   end
 
   def force
-    @resource[:force] ? "-f" : ""
+    @resource[:force] ? "-f" : false
   end
 
   #Adds log, cache and spare
@@ -109,7 +109,8 @@ Puppet::Type.type(:zpool).provide(:zpool) do
   end
 
   def create
-    zpool(*([:create, force, @resource[:pool]] + build_vdevs + build_log_mirror + build_named("spare") + build_named("log") + build_named("cache")))
+    create_cmd = force ?  [:create, force, @resource[:pool]] : [:create, @resource[:pool]]
+    zpool(*(create_cmd + build_vdevs + build_log_mirror + build_named("spare") + build_named("log") + build_named("cache")))
   end
 
   def destroy
@@ -126,7 +127,6 @@ Puppet::Type.type(:zpool).provide(:zpool) do
 
   [:disk, :mirror, :raidz, :log, :log_mirror, :cache, :spare].each do |field|
     define_method(field) do
-      Puppet.debug("#{field} -> #{current_pool[field]}")
       current_pool[field]
     end
 

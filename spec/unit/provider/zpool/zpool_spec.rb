@@ -86,6 +86,13 @@ describe Puppet::Type.type(:zpool).provider(:zpool) do
       end
     end
 
+    describe "when there is a log_mirror" do
+      it "should add the log_mirror disks to the hash" do
+        zpool_data.concat ["logs_mirror", "log_disk", "log_disk2"]
+        provider.process_zpool_data(zpool_data)[:log_mirror].should == ["log_disk log_disk2"]
+      end
+    end
+
     describe "when there is a cache" do
       it "should add the cache disk to the hash" do
         zpool_data.concat ["cache", "cache_disk"]
@@ -162,7 +169,7 @@ describe Puppet::Type.type(:zpool).provider(:zpool) do
   end
 
   describe "when calling the getters and setters" do
-    [:disk, :mirror, :raidz, :log, :cache, :spare].each do |field|
+    [:disk, :mirror, :raidz, :log, :log_mirror, :cache, :spare].each do |field|
       describe "when calling #{field}" do
         it "should get the #{field} value from the current_pool hash" do
           pool_hash = {}
@@ -199,6 +206,43 @@ describe Puppet::Type.type(:zpool).provider(:zpool) do
       resource[:log] = ['value2']
       resource[:cache] = ['value3']
       provider.expects(:zpool).with(:create, name, 'disk1', 'spare', 'value1', 'log', 'value2', 'cache', 'value3')
+      provider.create
+    end
+
+    it "should call create with '-f' and the 'spares', 'log' and 'cache' values" do
+      resource[:force] = true
+      resource[:spare] = ['value1']
+      resource[:log] = ['value2']
+      resource[:cache] = ['value3']
+      provider.expects(:zpool).with(:create, '-f', name, 'disk1', 'spare', 'value1', 'log', 'value2', 'cache', 'value3')
+      provider.create
+    end
+
+    it "should call create with the 'log mirror' values" do
+      resource[:log_mirror] = ['log1 log2']
+      provider.expects(:zpool).with(:create, name, 'disk1', 'log', 'mirror', 'log1 log2')
+      provider.create
+    end
+  end
+  
+  context '#create with striped raidz' do
+    before do
+      resource[:raidz] = ['disk1 disk2 disk3 disk4', 'disk5 disk6 disk7 disk8'] 
+    end
+
+    it "should call create with the build_vdevs value" do
+      provider.expects(:zpool).with(:create, name, ['raidz1', 'disk1 disk2 disk3 disk4'], ['raidz1', 'disk5 disk6 disk7 disk8'] )
+      provider.create
+    end
+  end
+  
+  context '#create with striped mirrors' do
+    before do
+      resource[:mirror] = ['disk1 disk2', 'disk3 disk4', 'disk5 disk6', 'disk7 disk8'] 
+    end
+
+    it "should call create with the build_vdevs value" do
+      provider.expects(:zpool).with(:create, name, ['mirror', 'disk1 disk2'], ['mirror', 'disk3 disk4'], ['mirror', 'disk5 disk6'], ['mirror', 'disk7 disk8'] )
       provider.create
     end
   end

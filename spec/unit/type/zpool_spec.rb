@@ -9,7 +9,7 @@ describe zpool do
     @resource = stub 'resource', :resource => nil, :provider => @provider, :line => nil, :file => nil
   end
 
-  properties = [:ensure, :disk, :mirror, :raidz, :spare, :log, :cache]
+  properties = [:ensure, :disk, :mirror, :raidz, :spare, :log, :log_mirror, :cache]
 
   properties.each do |property|
     it "should have a #{property} property" do
@@ -17,7 +17,7 @@ describe zpool do
     end
   end
 
-  parameters = [:pool, :raid_parity]
+  parameters = [:pool, :raid_parity, :force]
 
   parameters.each do |parameter|
     it "should have a #{parameter} parameter" do
