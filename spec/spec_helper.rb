@@ -3,8 +3,6 @@ require 'puppetlabs_spec_helper/module_spec_helper'
 RSpec.configure do |c|
   c.include PuppetlabsSpec::Files
 
-  c.formatter = :documentation
-
   c.add_setting :default_facts, :default => {}
   c.default_facts = {
       :osfamily               => 'RedHat',
