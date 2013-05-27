@@ -18,5 +18,8 @@ RSpec.configure do |c|
 
     system_run('puppet module install puppetlabs-stdlib --modulepath /etc/puppet/modules')
     puppet_module_install(:source => proj_root, :module_name => 'zfsonlinux')
+    # Emulate pluginsync until can find a way to make custom facts work with facter command
+    system_run('mkdir -p /var/lib/puppet/lib/facter')
+    system_run('cp /etc/puppet/modules/zfsonlinux/lib/facter/*.rb /var/lib/puppet/lib/facter/')
   end
 end
