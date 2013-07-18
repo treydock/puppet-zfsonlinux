@@ -1,6 +1,6 @@
 language: ruby
 bundler_args: --without development
-script: "bundle exec rake spec:all SPEC_OPTS='--format documentation'"
+script: "bundle exec rake ci"
 rvm:
   - 1.8.7
   - 1.9.3
