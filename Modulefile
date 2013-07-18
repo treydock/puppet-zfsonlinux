@@ -9,3 +9,4 @@ project_page 'http://github.com/treydock/puppet-zfsonlinux'
 
 ## Add dependencies, if any:
 dependency 'puppetlabs/stdlib', '>= 3.2.0'
+dependency 'treydock/gpg_key'

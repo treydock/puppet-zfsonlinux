@@ -6,3 +6,5 @@ Gemfile.lock
 metadata.json
 spec/fixtures/modules
 pkg/
+.rspec_system/
+.bundle/

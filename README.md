@@ -15,24 +15,24 @@ Installs zfsonlinux repositories and packages.
 
 ### Dependencies
 
-* Ruby 1.8.7
-* Bundler
-* Vagrant >= 1.2.0
+* rake
+* bundler
 
 ### Unit testing
 
-1. To install dependencies run `bundle install`
-2. Run tests using `bundle exec rake spec:all`
+Install gem dependencies
+
+    bundle install
+
+Run unit tests
+
+    bundle exec rake ci
 
 ### Vagrant system tests
 
-1. Have Vagrant >= 1.2.0 installed
-2. Run tests using `bundle exec rake spec:system`
+If you have Vagrant >= 1.1.0 installed you can run system tests
 
-For active development the `RSPEC_DESTROY=no` environment variable can be passed to keep the Vagrant VM from being destroyed after a test run.
-
-    RSPEC_DESTROY=no bundle exec rake spec:system
-
+    bundle exec rake spec:system
 
 To test this module against Scientific Linux, the following rake command can be used
 

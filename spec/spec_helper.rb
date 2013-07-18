@@ -1,34 +1,13 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
 
-RSpec.configure do |c|
-  c.include PuppetlabsSpec::Files
-
-  c.add_setting :default_facts, :default => {}
-  c.default_facts = {
+shared_context :defaults do
+  let :default_facts do
+    {
       :osfamily               => 'RedHat',
       :operatingsystem        => 'CentOS',
       :operatingsystemrelease => '6.4',
-  }
-
-  c.before :each do
-    # Ensure that we don't accidentally cache facts and environment
-    # between test cases.
-    Facter::Util::Loader.any_instance.stubs(:load_all)
-    Facter.clear
-    Facter.clear_messages
-
-    # Store any environment variables away to be restored later
-    @old_env = {}
-    ENV.each_key {|k| @old_env[k] = ENV[k]}
+      :os_maj_version         => '6',
+      :architecture           => 'x86_64',
+    }
   end
-
-  c.after :each do
-    PuppetlabsSpec::Files.cleanup
-  end
-end
-
-# Convenience helper for returning parameters for a type from the
-# catalogue.
-def param(type, title, param)
-  param_value(catalogue, type, title, param)
 end

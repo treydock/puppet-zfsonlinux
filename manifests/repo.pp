@@ -12,10 +12,8 @@
 #
 class zfsonlinux::repo {
 
-  include zfsonlinux::params
-
-  $repo_class = $zfsonlinux::params::repo_class
-
-  require $repo_class
-
+  case $::osfamily {
+    'RedHat': { include zfsonlinux::repo::el }
+    default: {}
+  }
 }

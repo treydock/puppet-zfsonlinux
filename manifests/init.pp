@@ -5,16 +5,23 @@
 # === Parameters
 #
 # [*zfs_package_name*]
-#   Default:  $zfsonlinux::params::zfs_package_name,
+#   Default: $zfsonlinux::params::zfs_package_name
 #
 # [*zfs_service_name*]
-#   Default:  $zfsonlinux::params::zfs_service_name,
+#   Default: $zfsonlinux::params::zfs_service_name
 #
 # [*zfs_service_hasstatus*]
-#   Default:  $zfsonlinux::params::zfs_service_hasstatus,
+#   Default: $zfsonlinux::params::zfs_service_hasstatus
 #
 # [*zfs_service_hasrestart*]
-#   Default:  $zfsonlinux::params::zfs_service_hasrestart
+#   Default: $zfsonlinux::params::zfs_service_hasrestart
+#
+# [*package_require*]
+#   Default: $zfsonlinux::params::package_require
+#
+# [*include_scripts*]
+#   Sets if the zfsonlinux::scripts class should be included
+#   Default: true
 #
 # === Examples
 #
@@ -32,11 +39,15 @@ class zfsonlinux (
   $zfs_package_name       = $zfsonlinux::params::zfs_package_name,
   $zfs_service_name       = $zfsonlinux::params::zfs_service_name,
   $zfs_service_hasstatus  = $zfsonlinux::params::zfs_service_hasstatus,
-  $zfs_service_hasrestart = $zfsonlinux::params::zfs_service_hasrestart
-
+  $zfs_service_hasrestart = $zfsonlinux::params::zfs_service_hasrestart,
+  $package_require        = $zfsonlinux::params::package_require,
+  $include_scripts        = true
 ) inherits zfsonlinux::params {
 
   include zfsonlinux::repo
+
+  validate_bool($include_scripts)
+  if $include_scripts { include zfsonlinux::scripts }
 
   # These packages are not pulled in by the RPM
   # This is a bug in 0.6.1, fixed once 0.6.2 is released
@@ -47,7 +58,7 @@ class zfsonlinux (
   package { 'zfs':
     ensure  => 'installed',
     name    => $zfs_package_name,
-    require => Class['zfsonlinux::repo'],
+    require => $package_require,
   }
 
   service { 'zfs':

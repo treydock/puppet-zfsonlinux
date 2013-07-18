@@ -16,6 +16,7 @@ class zfsonlinux::params {
 
   case $::osfamily {
     'RedHat': {
+      $package_require        = Yumrepo['zfs']
       $zfs_package_name       = 'zfs'
       $zfs_service_name       = 'zfs'
       $zfs_service_hasstatus  = true
@@ -26,18 +27,6 @@ class zfsonlinux::params {
         'make',
         'perl',
       ]
-
-      case $::operatingsystem {
-        /Scientific/: {
-          $repo_class         = 'zfsonlinux::repo::sl'
-          $repo_source_url    = undef
-        }
-
-        default: {
-          $repo_class         = 'zfsonlinux::repo::el'
-          $repo_source_url    = 'http://archive.zfsonlinux.org/epel/zfs-release-1-2.el6.noarch.rpm'
-        }
-      }
     }
 
     default: {

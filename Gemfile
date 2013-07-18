@@ -5,8 +5,7 @@ group :development, :test do
   gem 'puppetlabs_spec_helper', :require => false
   gem 'puppet-lint', '~> 0.3.2'
   gem 'travis-lint'
-  gem 'rspec-system', :git => 'git://github.com/treydock/rspec-system.git'
-  gem 'rspec-system-puppet', '~>1.0.0'
+  gem 'rspec-system-puppet', '~>2.0.0'
 end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']

@@ -1,6 +1,8 @@
 require 'rspec-system/spec_helper'
 require 'rspec-system-puppet/helpers'
 
+include RSpecSystemPuppet::Helpers
+
 RSpec.configure do |c|
   # Project root for the this module's code
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -8,18 +10,18 @@ RSpec.configure do |c|
   # Enable colour in Jenkins
   c.tty = true
 
-  # This is where we 'setup' the nodes before running our tests
-  c.system_setup_block = proc do
-    # TODO: find a better way of importing this into this namespace
-    include RSpecSystemPuppet::Helpers
+  c.include RSpecSystemPuppet::Helpers
 
+  # This is where we 'setup' the nodes before running our tests
+  c.before :suite do
     # Install puppet
     puppet_install
+    puppet_master_install
 
-    system_run('puppet module install puppetlabs-stdlib --modulepath /etc/puppet/modules')
+    shell('puppet module install puppetlabs/stdlib --modulepath /etc/puppet/modules')
+    shell('puppet module install stahnma/epel --modulepath /etc/puppet/modules')
+    shell('puppet module install treydock/gpg_key --modulepath /etc/puppet/modules')
+
     puppet_module_install(:source => proj_root, :module_name => 'zfsonlinux')
-    # Emulate pluginsync until can find a way to make custom facts work with facter command
-    system_run('mkdir -p /var/lib/puppet/lib/facter')
-    system_run('cp /etc/puppet/modules/zfsonlinux/lib/facter/*.rb /var/lib/puppet/lib/facter/')
   end
 end
