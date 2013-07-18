@@ -11,7 +11,7 @@ describe 'zfsonlinux::scripts' do
   it do
     should contain_file('/usr/local/sbin/mk_vdev_alias.rb').with({
       'ensure'  => 'present',
-      'content' => 'puppet:///modules/zfsonlinux/mk_vdev_alias.rb',
+      'source'  => 'puppet:///modules/zfsonlinux/mk_vdev_alias.rb',
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',

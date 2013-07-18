@@ -16,7 +16,7 @@ class zfsonlinux::scripts {
 
   file { '/usr/local/sbin/mk_vdev_alias.rb':
     ensure  => present,
-    content => 'puppet:///modules/zfsonlinux/mk_vdev_alias.rb',
+    source  => 'puppet:///modules/zfsonlinux/mk_vdev_alias.rb',
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
