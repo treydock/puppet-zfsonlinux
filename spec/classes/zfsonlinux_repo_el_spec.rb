@@ -6,7 +6,14 @@ describe 'zfsonlinux::repo::el' do
   let(:facts) { default_facts }
 
   it { should create_class('zfsonlinux::repo::el') }
-  it { should include_class('zfsonlinux::params') }
+  it { should include_class('zfsonlinux') }
+
+  it do
+    should contain_package('yum-plugin-priorities').with({
+      'ensure'  => 'installed',
+      'before'  => 'Package[zfs]',
+    })
+  end
 
   it do
     should contain_file('/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux').with({
@@ -47,5 +54,43 @@ describe 'zfsonlinux::repo::el' do
       'gpgkey'          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
       'priority'        => '1',
     })
-  end  
+  end
+
+
+  context 'with zfs_baseurl => http://foo.bar/zfs' do
+    let(:pre_condition) { "class { 'zfsonlinux': zfs_baseurl => 'http://foo.bar/zfs' }" }
+
+    it { should contain_yumrepo('zfs').with_baseurl('http://foo.bar/zfs') }
+  end
+  
+  context 'with zfs_source_baseurl => http://foo.bar/zfs/SRPMS' do
+    let(:pre_condition) { "class { 'zfsonlinux': zfs_source_baseurl => 'http://foo.bar/zfs/SRPMS' }" }
+
+    it { should contain_yumrepo('zfs-source').with_baseurl('http://foo.bar/zfs/SRPMS') }
+  end
+
+  context 'os_maj_version => 5' do
+    let(:facts) {default_facts.merge({ :os_maj_version => '5' })}
+
+    it do
+      should contain_package('yum-priorities').with({
+        'ensure'  => 'installed',
+        'before'  => 'Package[zfs]',
+      })
+    end
+
+    it do
+      should contain_yumrepo('zfs').with({
+        'descr'           => 'ZFS of Linux for EL 5',
+        'baseurl'         => 'http://archive.zfsonlinux.org/epel/5/x86_64/',
+      })
+    end
+
+    it do
+      should contain_yumrepo('zfs-source').with({
+        'descr'           => 'ZFS of Linux for EL 5 - Source',
+        'baseurl'         => 'http://archive.zfsonlinux.org/epel/5/SRPMS/',
+      })
+    end
+  end
 end

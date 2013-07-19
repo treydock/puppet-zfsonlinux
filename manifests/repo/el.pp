@@ -12,7 +12,17 @@
 #
 class zfsonlinux::repo::el {
 
-  include zfsonlinux::params
+  include zfsonlinux
+
+  $zfs_baseurl            = $zfsonlinux::zfs_baseurl
+  $zfs_source_baseurl     = $zfsonlinux::zfs_source_baseurl
+  $yum_priorities_package = $zfsonlinux::yum_priorities_package
+
+  if !defined(Package[$yum_priorities_package]) {
+    package { $yum_priorities_package:
+      ensure  => installed,
+    }
+  }
 
   file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
     ensure  => present,
@@ -33,7 +43,7 @@ class zfsonlinux::repo::el {
   # Ref: https://github.com/zfsonlinux/zfs/issues/1466
   yumrepo { 'zfs':
     descr           => "ZFS of Linux for EL ${::os_maj_version}",
-    baseurl         => "http://archive.zfsonlinux.org/epel/${::os_maj_version}/${::architecture}/",
+    baseurl         => $zfs_baseurl,
     enabled         => '1',
     metadata_expire => '604800',
     gpgcheck        => '1',
@@ -43,7 +53,7 @@ class zfsonlinux::repo::el {
 
   yumrepo { 'zfs-source':
     descr           => "ZFS of Linux for EL ${::os_maj_version} - Source",
-    baseurl         => "http://archive.zfsonlinux.org/epel/${::os_maj_version}/SRPMS/",
+    baseurl         => $zfs_source_baseurl,
     enabled         => '0',
     metadata_expire => '604800',
     gpgcheck        => '1',

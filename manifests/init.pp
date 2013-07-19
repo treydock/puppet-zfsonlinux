@@ -36,6 +36,9 @@
 # Copyright 2013 Trey Dockendorf
 #
 class zfsonlinux (
+  $zfs_baseurl            = $zfsonlinux::params::zfs_baseurl,
+  $zfs_source_baseurl     = $zfsonlinux::params::zfs_source_baseurl,
+  $yum_priorities_package = $zfsonlinux::params::yum_priorities_package,
   $zfs_package_name       = $zfsonlinux::params::zfs_package_name,
   $zfs_service_name       = $zfsonlinux::params::zfs_service_name,
   $zfs_service_hasstatus  = $zfsonlinux::params::zfs_service_hasstatus,
@@ -54,6 +57,8 @@ class zfsonlinux (
   # Ref: https://github.com/zfsonlinux/zfs/issues/1380
   $package_dependencies = $zfsonlinux::params::package_dependencies
   ensure_packages($package_dependencies)
+
+  Package[$yum_priorities_package] -> Package['zfs']
 
   package { 'zfs':
     ensure  => 'installed',
