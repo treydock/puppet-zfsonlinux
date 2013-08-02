@@ -21,6 +21,7 @@ RSpec.configure do |c|
     shell('puppet module install puppetlabs/stdlib --modulepath /etc/puppet/modules')
     shell('puppet module install stahnma/epel --modulepath /etc/puppet/modules')
     shell('puppet module install treydock/gpg_key --modulepath /etc/puppet/modules')
+    shell('puppet module install saz/sudo --modulepath /etc/puppet/modules')
 
     puppet_module_install(:source => proj_root, :module_name => 'zfsonlinux')
   end

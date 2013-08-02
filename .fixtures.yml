@@ -3,5 +3,6 @@ fixtures:
     stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
     create_resources: git://github.com/puppetlabs/puppetlabs-create_resources.git
     gpg_key: git://github.com/treydock/puppet-gpg_key.git
+    sudo: git://github.com/saz/puppet-sudo.git
   symlinks:
     zfsonlinux: "#{source_dir}"

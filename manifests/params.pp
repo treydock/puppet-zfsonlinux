@@ -14,6 +14,20 @@
 #
 class zfsonlinux::params {
 
+  $monitor_tool_defaults  = {
+    'zabbix' => {
+      'username'  => 'zabbix',
+      'conf_dir'  => '/etc/zabbix_agentd.conf.d',
+    },
+  }
+
+  $monitor_sudo_commands  = [
+    '/sbin/zpool status *',
+    '/sbin/zpool list *',
+    '/sbin/zfs list *',
+    '/sbin/zfs get *'
+  ]
+
   case $::osfamily {
     'RedHat': {
       $zfs_baseurl            = "http://archive.zfsonlinux.org/epel/${::os_maj_version}/${::architecture}/"
@@ -29,6 +43,8 @@ class zfsonlinux::params {
         'make',
         'perl',
       ]
+
+      $monitor_sudoers_path   = '/etc/sudoers.d/zfs'
 
       case $::os_maj_version {
         '5': {
