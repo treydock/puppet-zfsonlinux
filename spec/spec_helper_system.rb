@@ -23,6 +23,11 @@ RSpec.configure do |c|
     shell('puppet module install treydock/gpg_key --modulepath /etc/puppet/modules')
     shell('puppet module install saz/sudo --modulepath /etc/puppet/modules')
 
+    # Temporary until the zabbix20 module is added to the Forge
+    shell('yum -y install git')
+    shell('git clone git://github.com/treydock/puppet-zabbix20.git /etc/puppet/modules/zabbix20')
+    shell('puppet module install puppetlabs/firewall --modulepath /etc/puppet/modules')
+
     puppet_module_install(:source => proj_root, :module_name => 'zfsonlinux')
   end
 end

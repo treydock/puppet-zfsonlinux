@@ -19,7 +19,7 @@ class zfsonlinux::monitor::sudo {
   $sudo_commands  = $zfsonlinux::monitor::monitor_sudo_commands
 
   $sudo_commands_real = is_string($sudo_commands) ? {
-    true  => split($sudo_commands, ","),
+    true  => split($sudo_commands, ','),
     false => $sudo_commands,
   }
   validate_array($sudo_commands_real)
