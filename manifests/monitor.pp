@@ -48,11 +48,13 @@ class zfsonlinux::monitor (
   $monitor_sudoers_path   = $zfsonlinux::params::monitor_sudoers_path,
   $monitor_tool_conf_dir  = 'UNSET',
   $manage_sudo            = true,
-  $monitor_sudo_commands  = $zfsonlinux::params::monitor_sudo_commands
+  $monitor_sudo_commands  = $zfsonlinux::params::monitor_sudo_commands,
+  $include_arcstat        = true
 ) inherits zfsonlinux::params {
 
   validate_re($monitor_tool, '^(zabbix)$')
   validate_bool($manage_sudo)
+  validate_bool($include_arcstat)
 
   $monitor_username_real = $monitor_username ? {
     'UNSET' => $zfsonlinux::params::monitor_tool_defaults[$monitor_tool]['username'],
@@ -65,5 +67,6 @@ class zfsonlinux::monitor (
 
   include "zfsonlinux::monitor::${monitor_tool}"
   if $manage_sudo { include zfsonlinux::monitor::sudo }
+  if $include_arcstat { include zfsonlinux::arcstat }
 
 }

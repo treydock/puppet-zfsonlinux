@@ -46,6 +46,11 @@ class zfsonlinux::params {
 
       $monitor_sudoers_path   = '/etc/sudoers.d/zfs'
 
+      $kstat_package_name     = 'perl-Sun-Solaris-Kstat'
+      $kstat_package_source   = "http://yum.tamu.edu/zfsonlinux/epel/${::os_maj_version}/${::architecture}/perl-Sun-Solaris-Kstat-0.01-1.el${::os_maj_version}.noarch.rpm"
+      $arcstat_package_name   = 'zfs-arcstat'
+      $arcstat_package_source = "http://yum.tamu.edu/zfsonlinux/epel/${::os_maj_version}/${::architecture}/zfs-arcstat-0.5-1.el${::os_maj_version}.noarch.rpm"
+
       case $::os_maj_version {
         '5': {
           $yum_priorities_package = 'yum-priorities'

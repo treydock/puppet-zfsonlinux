@@ -1,3 +1,3 @@
 Defaults:<%= @username %> !requiretty
-Cmnd_Alias ZFS_CMDS = <%= @sudo_commands_real.join(",") %>
+Cmnd_Alias ZFS_CMDS = <%= @sudo_commands_real %>
 <%= @username %> ALL=(ALL) NOPASSWD: ZFS_CMDS

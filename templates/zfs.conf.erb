@@ -1,0 +1,3 @@
+<% unless @tunables.empty? -%>
+options zfs <% @tunables.keys.sort.each do |key| -%><%= key -%>=<%= @tunables[key] -%> <% end -%>
+<% end -%>

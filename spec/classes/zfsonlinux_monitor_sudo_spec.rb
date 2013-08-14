@@ -31,6 +31,36 @@ describe 'zfsonlinux::monitor::sudo' do
     .with_content(/^zabbix ALL=\(ALL\) NOPASSWD: ZFS_CMDS$/)
   end
 
+  context "os_maj_version => 5" do
+    let(:facts) { default_facts.merge({:os_maj_version => '5'}) }
+
+    it { should_not contain_file('/etc/sudoers.d/zfs') }
+
+    it do
+      should contain_file_line("sudo disable requiretty for zabbix").with({
+        'path'  => '/etc/sudoers',
+        'line'  => "Defaults:zabbix !requiretty",
+        'match' => "^Defaults:zabbix.*$",
+      })
+    end
+    
+    it do
+      should contain_file_line("sudo define ZFS_CMDS").with({
+        'path'  => '/etc/sudoers',
+        'line'  => "Cmnd_Alias ZFS_CMDS = /sbin/zpool status *,/sbin/zpool list *,/sbin/zfs list *,/sbin/zfs get *",
+        'match' => '^Cmnd_Alias\s+ZFS_CMDS\s+=.*$',
+      })
+    end
+    
+    it do
+      should contain_file_line("sudo allow zabbix to execute ZFS_CMDS").with({
+        'path'  => '/etc/sudoers',
+        'line'  => "zabbix ALL=(ALL) NOPASSWD: ZFS_CMDS",
+        'match' => '^zabbix\s+ALL=\(ALL\)\s+NOPASSWD:\s+ZFS_CMDS$',
+      })
+    end
+  end
+
   context "with monitor_sudo_commands as string" do
     let :pre_condition do
       [
@@ -46,11 +76,5 @@ describe 'zfsonlinux::monitor::sudo' do
       should contain_file('/etc/sudoers.d/zfs') \
       .with_content(/^Cmnd_Alias ZFS_CMDS = cmd1,cmd2,cmd3$/)
     end
-  end
-
-  context "os_maj_version => 5" do
-    let(:facts) { default_facts.merge({:os_maj_version => '5'}) }
-
-    it { should_not contain_file('/etc/sudoers.d/zfs') }
   end
 end

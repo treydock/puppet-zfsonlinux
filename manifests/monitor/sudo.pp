@@ -19,13 +19,26 @@ class zfsonlinux::monitor::sudo {
   $sudo_commands  = $zfsonlinux::monitor::monitor_sudo_commands
 
   $sudo_commands_real = is_string($sudo_commands) ? {
-    true  => split($sudo_commands, ','),
-    false => $sudo_commands,
+    true  => $sudo_commands,
+    false => join($sudo_commands, ','),
   }
-  validate_array($sudo_commands_real)
 
   if $::osfamily =~ /RedHat/ and $::os_maj_version < 6 {
-    warning("Unsupported os_maj_version: ${::os_maj_version}, for RedHat osfamily.  Module ${module_name} only supports os_maj_version >= 6")
+    file_line { "sudo disable requiretty for ${username}":
+      path  => '/etc/sudoers',
+      line  => "Defaults:${username} !requiretty",
+      match => "^Defaults:${username}.*$",
+    }->
+    file_line { 'sudo define ZFS_CMDS':
+      path  => '/etc/sudoers',
+      line  => "Cmnd_Alias ZFS_CMDS = ${sudo_commands_real}",
+      match => '^Cmnd_Alias\s+ZFS_CMDS\s+=.*$',
+    }->
+    file_line { "sudo allow ${username} to execute ZFS_CMDS":
+      path  => '/etc/sudoers',
+      line  => "${username} ALL=(ALL) NOPASSWD: ZFS_CMDS",
+      match => "^${username}\\s+ALL=\\(ALL\\)\\s+NOPASSWD:\\s+ZFS_CMDS$",
+    }
   } else {
     file { '/etc/sudoers.d/zfs':
       ensure  => present,

@@ -31,5 +31,25 @@ describe 'zfsonlinux' do
   	  'name'        => 'zfs',
   	  'require'     => 'Package[zfs]',
     })
-  end    
+  end
+  
+  it do
+    should contain_file('/etc/modprobe.d/zfs.conf').with({
+      'ensure'  => 'present',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0644',
+      'before'  => 'Service[zfs]',
+    }) \
+    .with_content(/^$/)
+  end
+  
+  context "tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'}" do
+    let(:params){{ :tunables =>  {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'} }}
+    
+    it do
+      should contain_file('/etc/modprobe.d/zfs.conf') \
+      .with_content(/^options zfs zfs_arc_max=0 zfs_arc_min=0 $/)
+    end
+  end
 end

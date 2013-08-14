@@ -36,6 +36,7 @@
 # Copyright 2013 Trey Dockendorf
 #
 class zfsonlinux (
+  $tunables               = {},
   $zfs_baseurl            = $zfsonlinux::params::zfs_baseurl,
   $zfs_source_baseurl     = $zfsonlinux::params::zfs_source_baseurl,
   $yum_priorities_package = $zfsonlinux::params::yum_priorities_package,
@@ -75,4 +76,12 @@ class zfsonlinux (
     require     => Package['zfs'],
   }
 
+  file { '/etc/modprobe.d/zfs.conf':
+    ensure  => present,
+    content => template('zfsonlinux/zfs.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    before  => Service['zfs'],
+  }
 }
