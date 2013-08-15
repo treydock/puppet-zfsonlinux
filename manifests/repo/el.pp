@@ -13,10 +13,12 @@
 class zfsonlinux::repo::el {
 
   include zfsonlinux
+  include zfsonlinux::params
 
   $zfs_baseurl            = $zfsonlinux::zfs_baseurl
   $zfs_source_baseurl     = $zfsonlinux::zfs_source_baseurl
   $yum_priorities_package = $zfsonlinux::yum_priorities_package
+  $os_maj_version         = $zfsonlinux::params::os_maj_version
 
   if !defined(Package[$yum_priorities_package]) {
     package { $yum_priorities_package:
@@ -42,7 +44,7 @@ class zfsonlinux::repo::el {
   # instead of EPEL
   # Ref: https://github.com/zfsonlinux/zfs/issues/1466
   yumrepo { 'zfs':
-    descr           => "ZFS of Linux for EL ${::os_maj_version}",
+    descr           => "ZFS of Linux for EL ${os_maj_version}",
     baseurl         => $zfs_baseurl,
     enabled         => '1',
     metadata_expire => '604800',
@@ -52,7 +54,7 @@ class zfsonlinux::repo::el {
   }
 
   yumrepo { 'zfs-source':
-    descr           => "ZFS of Linux for EL ${::os_maj_version} - Source",
+    descr           => "ZFS of Linux for EL ${os_maj_version} - Source",
     baseurl         => $zfs_source_baseurl,
     enabled         => '0',
     metadata_expire => '604800',

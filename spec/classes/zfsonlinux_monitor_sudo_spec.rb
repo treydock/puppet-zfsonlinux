@@ -16,6 +16,7 @@ describe 'zfsonlinux::monitor::sudo' do
 
   it { should create_class('zfsonlinux::monitor::sudo') }
   it { should include_class('zfsonlinux::monitor') }
+  it { should include_class('zfsonlinux::params') }
 
   it do
     should contain_file('/etc/sudoers.d/zfs').with({
@@ -31,8 +32,8 @@ describe 'zfsonlinux::monitor::sudo' do
     .with_content(/^zabbix ALL=\(ALL\) NOPASSWD: ZFS_CMDS$/)
   end
 
-  context "os_maj_version => 5" do
-    let(:facts) { default_facts.merge({:os_maj_version => '5'}) }
+  context "operatingsystemrelease => 5.9" do
+    let(:facts) { default_facts.merge({:operatingsystemrelease => '5.9'}) }
 
     it { should_not contain_file('/etc/sudoers.d/zfs') }
 

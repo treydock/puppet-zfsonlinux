@@ -7,6 +7,7 @@ describe 'zfsonlinux::repo::el' do
 
   it { should create_class('zfsonlinux::repo::el') }
   it { should include_class('zfsonlinux') }
+  it { should include_class('zfsonlinux::params') }
 
   it do
     should contain_package('yum-plugin-priorities').with({
@@ -69,8 +70,8 @@ describe 'zfsonlinux::repo::el' do
     it { should contain_yumrepo('zfs-source').with_baseurl('http://foo.bar/zfs/SRPMS') }
   end
 
-  context 'os_maj_version => 5' do
-    let(:facts) {default_facts.merge({ :os_maj_version => '5' })}
+  context 'operatingsystemrelease => 5.9' do
+    let(:facts) {default_facts.merge({ :operatingsystemrelease => '5.9' })}
 
     it do
       should contain_package('yum-priorities').with({

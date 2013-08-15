@@ -17,19 +17,20 @@ describe 'zfsonlinux' do
   it do
     should contain_package('zfs').with({
       'ensure'  => 'installed',
-  	  'name'    => 'zfs',
-  	  'require' => 'Yumrepo[zfs]',
+      'name'    => 'zfs',
+      'require' => 'Yumrepo[zfs]',
     })
   end
 
   it do
     should contain_service('zfs').with({
       'ensure'      => 'running',
-  	  'enable'      => 'true',
-      'hasstatus'   => 'true',
+      'enable'      => 'true',
+      'hasstatus'   => 'false',
       'hasrestart'  => 'true',
-  	  'name'        => 'zfs',
-  	  'require'     => 'Package[zfs]',
+      'status'      => 'lsmod | egrep -q "^zfs"',
+      'name'        => 'zfs',
+      'require'     => 'Package[zfs]',
     })
   end
   

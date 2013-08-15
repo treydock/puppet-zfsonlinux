@@ -44,6 +44,7 @@ class zfsonlinux (
   $zfs_service_name       = $zfsonlinux::params::zfs_service_name,
   $zfs_service_hasstatus  = $zfsonlinux::params::zfs_service_hasstatus,
   $zfs_service_hasrestart = $zfsonlinux::params::zfs_service_hasrestart,
+  $zfs_service_status     = $zfsonlinux::params::zfs_service_status,
   $package_require        = $zfsonlinux::params::package_require,
   $include_scripts        = true
 ) inherits zfsonlinux::params {
@@ -72,6 +73,7 @@ class zfsonlinux (
     enable      => true,
     hasstatus   => $zfs_service_hasstatus,
     hasrestart  => $zfs_service_hasrestart,
+    status      => $zfs_service_status,
     name        => $zfs_service_name,
     require     => Package['zfs'],
   }

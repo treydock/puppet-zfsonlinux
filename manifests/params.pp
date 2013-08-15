@@ -28,15 +28,21 @@ class zfsonlinux::params {
     '/sbin/zfs get *'
   ]
 
+  $os_maj_version = $::os_maj_version ? {
+    undef   => inline_template('<%= scope.lookupvar(\'::operatingsystemrelease\').split(\'.\').first %>'),
+    default => $::os_maj_version,
+  }
+
   case $::osfamily {
     'RedHat': {
-      $zfs_baseurl            = "http://archive.zfsonlinux.org/epel/${::os_maj_version}/${::architecture}/"
-      $zfs_source_baseurl     = "http://archive.zfsonlinux.org/epel/${::os_maj_version}/SRPMS/"
+      $zfs_baseurl            = "http://archive.zfsonlinux.org/epel/${os_maj_version}/${::architecture}/"
+      $zfs_source_baseurl     = "http://archive.zfsonlinux.org/epel/${os_maj_version}/SRPMS/"
       $package_require        = Yumrepo['zfs']
       $zfs_package_name       = 'zfs'
       $zfs_service_name       = 'zfs'
-      $zfs_service_hasstatus  = true
+      $zfs_service_hasstatus  = false
       $zfs_service_hasrestart = true
+      $zfs_service_status     = 'lsmod | egrep -q "^zfs"'
       $package_dependencies   = [
         'kernel-devel',
         'gcc',
@@ -47,11 +53,11 @@ class zfsonlinux::params {
       $monitor_sudoers_path   = '/etc/sudoers.d/zfs'
 
       $kstat_package_name     = 'perl-Sun-Solaris-Kstat'
-      $kstat_package_source   = "http://yum.tamu.edu/zfsonlinux/epel/${::os_maj_version}/${::architecture}/perl-Sun-Solaris-Kstat-0.01-1.el${::os_maj_version}.noarch.rpm"
+      $kstat_package_source   = "http://yum.tamu.edu/zfsonlinux/epel/${os_maj_version}/${::architecture}/perl-Sun-Solaris-Kstat-0.01-1.el${os_maj_version}.noarch.rpm"
       $arcstat_package_name   = 'zfs-arcstat'
-      $arcstat_package_source = "http://yum.tamu.edu/zfsonlinux/epel/${::os_maj_version}/${::architecture}/zfs-arcstat-0.5-1.el${::os_maj_version}.noarch.rpm"
+      $arcstat_package_source = "http://yum.tamu.edu/zfsonlinux/epel/${os_maj_version}/${::architecture}/zfs-arcstat-0.5-1.el${os_maj_version}.noarch.rpm"
 
-      case $::os_maj_version {
+      case $os_maj_version {
         '5': {
           $yum_priorities_package = 'yum-priorities'
         }
