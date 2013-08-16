@@ -7,6 +7,12 @@ describe 'zfsonlinux::monitor' do
 
   let(:params) {{ :monitor_tool => 'zabbix', }}
 
+  let :pre_condition do
+    [
+      "class { 'zabbix20::agent': }",
+    ]
+  end
+
   it { should create_class('zfsonlinux::monitor') }
   it { should contain_class('zfsonlinux::params') }
   it { should include_class('zfsonlinux::monitor::sudo') }

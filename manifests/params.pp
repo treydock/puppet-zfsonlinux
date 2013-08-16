@@ -59,7 +59,7 @@ class zfsonlinux::params {
 
       case $os_maj_version {
         '5': {
-          $yum_priorities_package = 'yum-priorities'
+          fail("Unsupported operatingsystemrelease: ${::operatingsystemrelease}, module ${module_name} only supports >= 6.0")
         }
         default: {
           $yum_priorities_package = 'yum-plugin-priorities'

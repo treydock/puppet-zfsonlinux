@@ -6,6 +6,7 @@ describe 'zfsonlinux::monitor::zabbix' do
   let :pre_condition do
     [
       "class { 'sudo': }",
+      "class { 'zabbix20::agent': }",
       "class { 'zfsonlinux::monitor':
         monitor_tool      => 'zabbix',
       }",
@@ -34,6 +35,7 @@ describe 'zfsonlinux::monitor::zabbix' do
     let :pre_condition do
       [
         "class { 'sudo': }",
+        "class { 'zabbix20::agent': }",
         "class { 'zfsonlinux::monitor':
           monitor_tool            => 'zabbix',
           monitor_tool_conf_dir   => '/etc/foo',
@@ -48,6 +50,7 @@ describe 'zfsonlinux::monitor::zabbix' do
     let :pre_condition do
       [
         "class { 'sudo': }",
+        "class { 'zabbix20::agent': }",
         "class { 'zfsonlinux::monitor':
           monitor_tool      => 'zabbix',
           manage_sudo       => false,

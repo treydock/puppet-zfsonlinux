@@ -34,6 +34,10 @@
 #   or an Array.
 #   Default: $zfsonlinux::params::monitor_sudo_commands
 #
+# [*include_arcstat*]
+#   Sets if the zfsonlinux::arcstat class should be included
+#   Default: true
+#
 # === Authors
 #
 # Trey Dockendorf <treydock@gmail.com>

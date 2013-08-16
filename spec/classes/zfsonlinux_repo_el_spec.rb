@@ -69,29 +69,4 @@ describe 'zfsonlinux::repo::el' do
 
     it { should contain_yumrepo('zfs-source').with_baseurl('http://foo.bar/zfs/SRPMS') }
   end
-
-  context 'operatingsystemrelease => 5.9' do
-    let(:facts) {default_facts.merge({ :operatingsystemrelease => '5.9' })}
-
-    it do
-      should contain_package('yum-priorities').with({
-        'ensure'  => 'installed',
-        'before'  => 'Package[zfs]',
-      })
-    end
-
-    it do
-      should contain_yumrepo('zfs').with({
-        'descr'           => 'ZFS of Linux for EL 5',
-        'baseurl'         => 'http://archive.zfsonlinux.org/epel/5/x86_64/',
-      })
-    end
-
-    it do
-      should contain_yumrepo('zfs-source').with({
-        'descr'           => 'ZFS of Linux for EL 5 - Source',
-        'baseurl'         => 'http://archive.zfsonlinux.org/epel/5/SRPMS/',
-      })
-    end
-  end
 end

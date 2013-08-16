@@ -4,6 +4,21 @@
 #
 # === Parameters
 #
+# [*tunables*]
+#   Hash that defines ZFS module options.
+#   Default: {}
+#
+# [*zfs_baseurl*]
+#   The zfs repository baseurl
+#   Default: $zfsonlinux::params::zfs_baseurl
+#
+# [*zfs_source_baseurl*]
+#   The zfs-source repository baseurl
+#   Default: $zfsonlinux::params::zfs_source_baseurl
+#
+# [*yum_priorities_package*]
+#   Default: $zfsonlinux::params::yum_priorities_package
+#
 # [*zfs_package_name*]
 #   Default: $zfsonlinux::params::zfs_package_name
 #
@@ -15,6 +30,10 @@
 #
 # [*zfs_service_hasrestart*]
 #   Default: $zfsonlinux::params::zfs_service_hasrestart
+#
+# [*zfs_service_status*]
+#   Command used to determine zfs service's status.
+#   Default: $zfsonlinux::params::zfs_service_hasstatus
 #
 # [*package_require*]
 #   Default: $zfsonlinux::params::package_require
@@ -51,7 +70,9 @@ class zfsonlinux (
 
   include zfsonlinux::repo
 
+  validate_hash($tunables)
   validate_bool($include_scripts)
+
   if $include_scripts { include zfsonlinux::scripts }
 
   # These packages are not pulled in by the RPM
