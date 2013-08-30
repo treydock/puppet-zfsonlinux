@@ -59,6 +59,7 @@ class zfsonlinux (
   $zfs_baseurl            = $zfsonlinux::params::zfs_baseurl,
   $zfs_source_baseurl     = $zfsonlinux::params::zfs_source_baseurl,
   $yum_priorities_package = $zfsonlinux::params::yum_priorities_package,
+  $package_ensure         = 'installed',
   $zfs_package_name       = $zfsonlinux::params::zfs_package_name,
   $zfs_service_name       = $zfsonlinux::params::zfs_service_name,
   $zfs_service_hasstatus  = $zfsonlinux::params::zfs_service_hasstatus,
@@ -84,7 +85,7 @@ class zfsonlinux (
   Package[$yum_priorities_package] -> Package['zfs']
 
   package { 'zfs':
-    ensure  => 'installed',
+    ensure  => $package_ensure,
     name    => $zfs_package_name,
     require => $package_require,
   }
