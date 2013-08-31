@@ -17,7 +17,7 @@ describe 'zfsonlinux::monitor' do
   it { should contain_class('zfsonlinux::params') }
   it { should include_class('zfsonlinux::monitor::sudo') }
   it { should include_class('zfsonlinux::monitor::zabbix') }
-  it { should include_class('zfsonlinux::arcstat') }
+  it { should_not include_class('zfsonlinux::arcstat') }
 
   context "monitor_tool => 'foo'" do
     let(:params) {{ :monitor_tool => 'foo' }}
@@ -45,10 +45,10 @@ describe 'zfsonlinux::monitor' do
     end
   end
 
-  context 'include_arcstat => false' do
-    let(:params) {{ :monitor_tool => 'zabbix', :include_arcstat => false }}
+  context 'include_arcstat => true' do
+    let(:params) {{ :monitor_tool => 'zabbix', :include_arcstat => true }}
     
-    it { should_not include_class('zfsonlinux::arcstat') }
+    it { should include_class('zfsonlinux::arcstat') }
   end
 
   context "include_arcstat => 'true'" do

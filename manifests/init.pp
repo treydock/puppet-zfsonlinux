@@ -40,7 +40,7 @@
 #
 # [*include_scripts*]
 #   Sets if the zfsonlinux::scripts class should be included
-#   Default: true
+#   Default: false
 #
 # === Examples
 #
@@ -66,7 +66,7 @@ class zfsonlinux (
   $zfs_service_hasrestart = $zfsonlinux::params::zfs_service_hasrestart,
   $zfs_service_status     = $zfsonlinux::params::zfs_service_status,
   $package_require        = $zfsonlinux::params::package_require,
-  $include_scripts        = true
+  $include_scripts        = false
 ) inherits zfsonlinux::params {
 
   include zfsonlinux::repo

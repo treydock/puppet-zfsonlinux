@@ -9,19 +9,13 @@ describe 'zfsonlinux::arcstat' do
   it { should include_class('zfsonlinux::params') }
 
   it do
-    should contain_package('perl-Sun-Solaris-Kstat').with({
-      'ensure'    => 'installed',
-      'source'    => 'http://yum.tamu.edu/zfsonlinux/epel/6/x86_64/perl-Sun-Solaris-Kstat-0.01-1.el6.noarch.rpm',
-      'provider'  => 'rpm',
-      'before'    => 'Package[zfs-arcstat]',
+    should contain_file('/usr/bin/arcstat.py').with({
+      'ensure'  => 'present',
+      'path'    => '/usr/bin/arcstat.py',
+      'source'  => 'puppet:///modules/zfsonlinux/arcstat.py',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0755',
     })
   end
-
-  it do
-    should contain_package('zfs-arcstat').with({
-      'ensure'    => 'installed',
-      'source'    => 'http://yum.tamu.edu/zfsonlinux/epel/6/x86_64/zfs-arcstat-0.5-1.el6.noarch.rpm',
-      'provider'  => 'rpm',
-    })
-  end 
 end

@@ -36,7 +36,7 @@
 #
 # [*include_arcstat*]
 #   Sets if the zfsonlinux::arcstat class should be included
-#   Default: true
+#   Default: false
 #
 # === Authors
 #
@@ -53,7 +53,7 @@ class zfsonlinux::monitor (
   $monitor_tool_conf_dir  = 'UNSET',
   $manage_sudo            = true,
   $monitor_sudo_commands  = $zfsonlinux::params::monitor_sudo_commands,
-  $include_arcstat        = true
+  $include_arcstat        = false
 ) inherits zfsonlinux::params {
 
   validate_re($monitor_tool, '^(zabbix)$')
