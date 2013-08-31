@@ -12,7 +12,6 @@ describe 'zfsonlinux::repo::el' do
   it do
     should contain_package('yum-plugin-priorities').with({
       'ensure'  => 'installed',
-      'before'  => 'Package[zfs]',
     })
   end
 
@@ -42,6 +41,7 @@ describe 'zfsonlinux::repo::el' do
       'gpgcheck'        => '1',
       'gpgkey'          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
       'priority'        => '1',
+      'require'         => 'Package[yum-plugin-priorities]',
     })
   end
 
@@ -54,6 +54,7 @@ describe 'zfsonlinux::repo::el' do
       'gpgcheck'        => '1',
       'gpgkey'          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
       'priority'        => '1',
+      'require'         => 'Package[yum-plugin-priorities]',
     })
   end
 

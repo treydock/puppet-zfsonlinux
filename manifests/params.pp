@@ -37,7 +37,6 @@ class zfsonlinux::params {
     'RedHat': {
       $zfs_baseurl            = "http://archive.zfsonlinux.org/epel/${os_maj_version}/${::architecture}/"
       $zfs_source_baseurl     = "http://archive.zfsonlinux.org/epel/${os_maj_version}/SRPMS/"
-      $package_require        = Yumrepo['zfs']
       $zfs_package_name       = 'zfs'
       $zfs_service_name       = 'zfs'
       $zfs_service_hasstatus  = false
@@ -49,6 +48,7 @@ class zfsonlinux::params {
         'make',
         'perl',
       ]
+      $package_require        = [Yumrepo['zfs'], Package[$package_dependencies]]
 
       $monitor_sudoers_path   = '/etc/sudoers.d/zfs'
 

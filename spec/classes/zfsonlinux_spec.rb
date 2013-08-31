@@ -19,7 +19,7 @@ describe 'zfsonlinux' do
     should contain_package('zfs').with({
       'ensure'  => 'installed',
       'name'    => 'zfs',
-      'require' => 'Yumrepo[zfs]',
+      'require' => ['Yumrepo[zfs]', 'Package[kernel-devel]', 'Package[gcc]', 'Package[make]', 'Package[perl]'],
     })
   end
 

@@ -51,6 +51,7 @@ class zfsonlinux::repo::el {
     gpgcheck        => '1',
     gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
     priority        => '1',
+    require         => Package[$yum_priorities_package],
   }
 
   yumrepo { 'zfs-source':
@@ -61,5 +62,6 @@ class zfsonlinux::repo::el {
     gpgcheck        => '1',
     gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
     priority        => '1',
+    require         => Package[$yum_priorities_package],
   }
 }

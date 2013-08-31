@@ -82,8 +82,6 @@ class zfsonlinux (
   $package_dependencies = $zfsonlinux::params::package_dependencies
   ensure_packages($package_dependencies)
 
-  Package[$yum_priorities_package] -> Package['zfs']
-
   package { 'zfs':
     ensure  => $package_ensure,
     name    => $zfs_package_name,
