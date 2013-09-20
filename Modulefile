@@ -6,7 +6,5 @@ license 'Apache License, Version 2.0'
 summary 'zfsonlinux puppet module'
 description 'zfsonlinux puppet module'
 project_page 'http://github.com/treydock/puppet-zfsonlinux'
-
-## Add dependencies, if any:
 dependency 'puppetlabs/stdlib', '>= 3.2.0'
-dependency 'treydock/gpg_key'
+dependency 'treydock/gpg_key', '0.0.x'
