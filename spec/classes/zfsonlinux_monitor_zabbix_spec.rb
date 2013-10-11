@@ -31,13 +31,11 @@ describe 'zfsonlinux::monitor::zabbix' do
   end
 
   it do
-    content = subject.resource('file', '/etc/zabbix_agentd.conf.d/zfs.conf').send(:parameters)[:content]
-    pp content.split("\n")
-
     verify_contents(subject, '/etc/zabbix_agentd.conf.d/zfs.conf', [
       'UserParameter=zpool.health[*],sudo /sbin/zpool list -H -o health $1',
       'UserParameter=zfs.get[*],echo `sudo /sbin/zfs get -H -p $1 $2` | tr -s \' \' | cut -d \' \' -f 3',
-      'UserParameter=zfs.arcstat[*],/usr/local/bin/arcstat_get.py $1',
+      'UserParameter=zfs.arcstat[*],grep "^$1 " /proc/spl/kstat/zfs/arcstats | awk -F" " \'{ print $$3 }\'',
+      'UserParameter=zfs.arcstat.get[*],/usr/local/bin/arcstat_get.py $1',
     ])
   end
 
