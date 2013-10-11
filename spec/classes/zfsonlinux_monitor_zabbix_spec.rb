@@ -22,13 +22,23 @@ describe 'zfsonlinux::monitor::zabbix' do
     should contain_file('/etc/zabbix_agentd.conf.d/zfs.conf').with({
       'ensure'  => 'present',
       'path'    => '/etc/zabbix_agentd.conf.d/zfs.conf',
-      'source'  => 'puppet:///modules/zfsonlinux/monitor/zabbix/zfs.conf',
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0644',
       'require' => ['File[/etc/sudoers.d/zfs]', 'File[/etc/zabbix_agentd.conf.d]'],
       'notify'  => 'Service[zabbix-agent]',
     })
+  end
+
+  it do
+    content = subject.resource('file', '/etc/zabbix_agentd.conf.d/zfs.conf').send(:parameters)[:content]
+    pp content.split("\n")
+
+    verify_contents(subject, '/etc/zabbix_agentd.conf.d/zfs.conf', [
+      'UserParameter=zpool.health[*],sudo /sbin/zpool list -H -o health $1',
+      'UserParameter=zfs.get[*],echo `sudo /sbin/zfs get -H -p $1 $2` | tr -s \' \' | cut -d \' \' -f 3',
+      'UserParameter=zfs.arcstat[*],/usr/local/bin/arcstat_get.py $1',
+    ])
   end
 
   context "monitor_tool_conf_dir => '/etc/foo'" do

@@ -52,8 +52,6 @@ class zfsonlinux::params {
 
       $monitor_sudoers_path   = '/etc/sudoers.d/zfs'
 
-      $arcstat_path           = '/usr/bin/arcstat.py'
-
       case $os_maj_version {
         '5': {
           fail("Unsupported operatingsystemrelease: ${::operatingsystemrelease}, module ${module_name} only supports >= 6.0")

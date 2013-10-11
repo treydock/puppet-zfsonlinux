@@ -25,7 +25,7 @@ class zfsonlinux::monitor::zabbix {
   file { '/etc/zabbix_agentd.conf.d/zfs.conf':
     ensure  => present,
     path    => "${monitor_tool_conf_dir}/zfs.conf",
-    source  => 'puppet:///modules/zfsonlinux/monitor/zabbix/zfs.conf',
+    content => template('zfsonlinux/monitor/zabbix/zfs.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',

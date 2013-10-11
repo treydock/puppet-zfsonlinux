@@ -34,9 +34,13 @@
 #   or an Array.
 #   Default: $zfsonlinux::params::monitor_sudo_commands
 #
-# [*include_arcstat*]
-#   Sets if the zfsonlinux::arcstat class should be included
-#   Default: false
+# [*include_scripts*]
+#   Sets if the zfsonlinux::monitor::scripts class should be included
+#   Default: true
+#
+# [*scripts_dir*]
+#   Directory to store additional scripts.
+#   Default: /usr/local/bin
 #
 # === Authors
 #
@@ -53,12 +57,13 @@ class zfsonlinux::monitor (
   $monitor_tool_conf_dir  = 'UNSET',
   $manage_sudo            = true,
   $monitor_sudo_commands  = $zfsonlinux::params::monitor_sudo_commands,
-  $include_arcstat        = false
+  $include_scripts        = true,
+  $scripts_dir            = '/usr/local/bin'
 ) inherits zfsonlinux::params {
 
   validate_re($monitor_tool, '^(zabbix)$')
   validate_bool($manage_sudo)
-  validate_bool($include_arcstat)
+  validate_bool($include_scripts)
 
   $monitor_username_real = $monitor_username ? {
     'UNSET' => $zfsonlinux::params::monitor_tool_defaults[$monitor_tool]['username'],
@@ -71,6 +76,6 @@ class zfsonlinux::monitor (
 
   include "zfsonlinux::monitor::${monitor_tool}"
   if $manage_sudo { include zfsonlinux::monitor::sudo }
-  if $include_arcstat { include zfsonlinux::arcstat }
+  if $include_scripts { include zfsonlinux::monitor::scripts }
 
 }

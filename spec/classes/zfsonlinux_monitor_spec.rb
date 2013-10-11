@@ -46,14 +46,14 @@ describe 'zfsonlinux::monitor' do
   end
 
   context 'include_arcstat => true' do
-    let(:params) {{ :monitor_tool => 'zabbix', :include_arcstat => true }}
+    let(:params) {{ :monitor_tool => 'zabbix', :include_scripts => false }}
     
-    it { should include_class('zfsonlinux::arcstat') }
+    it { should_not include_class('zfsonlinux::monitor::scripts') }
   end
 
   context "include_arcstat => 'true'" do
-    let(:params) {{ :monitor_tool => 'zabbix', :include_arcstat => 'true' }}
+    let(:params) {{ :monitor_tool => 'zabbix', :include_scripts => 'false' }}
     
-    it { expect { should include_class('zfsonlinux::arcstat') }.to raise_error(Puppet::Error, /is not a boolean/) }
+    it { expect { should include_class('zfsonlinux::monitor::scripts') }.to raise_error(Puppet::Error, /is not a boolean/) }
   end
 end
