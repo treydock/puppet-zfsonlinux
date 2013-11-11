@@ -3,7 +3,7 @@ require 'rspec-system-puppet/helpers'
 require 'rspec-system-serverspec/helpers'
 
 module RSpecSystem
-  class NodeSet::Vagrant < RSpecSystem::NodeSet::Base
+  class NodeSet::VagrantBase < RSpecSystem::NodeSet::Base
     def extra_disks(node, ps)
       [
         {:path => "#{File.expand_path('~')}/vagrant/#{node}_#{ps['box']}_sdb.vdi", :size => 1*1024},
@@ -12,23 +12,25 @@ module RSpecSystem
     end
 
     def create_vagrantfile
-      log.info "[Vagrant#create_vagrantfile] Creating vagrant file here: #{@vagrant_path}"
+      output << bold(color("localhost$", :green)) << " cd #{@vagrant_path}\n"
       FileUtils.mkdir_p(@vagrant_path)
       File.open(File.expand_path(File.join(@vagrant_path, "Vagrantfile")), 'w') do |f|
-        f.write("Vagrant.configure('2') do |config|\n")
+        f.write('Vagrant.configure("2") do |c|' + "\n")
         nodes.each do |k,v|
-          log.debug "Filling in content for #{k}"
+          ps = v.provider_specifics[provider_type]
+          default_options = { 'mac' => randmac }
+          options = default_options.merge(v.options || {})
 
-          ps = v.provider_specifics['vagrant']
-
-          node_config = "  config.vm.define '#{k}' do |v|\n"
+          node_config = "  c.vm.define '#{k}' do |v|\n"
           node_config << "    v.vm.hostname = '#{k}'\n"
           node_config << "    v.vm.box = '#{ps['box']}'\n"
           node_config << "    v.vm.box_url = '#{ps['box_url']}'\n" unless ps['box_url'].nil?
-          node_config << "    v.vm.provider :virtualbox do |vb|\n"
+          node_config << customize_vm(k,options)
+          node_config << "    v.vm.provider '#{vagrant_provider_name}' do |prov, override|\n"
+          node_config << customize_provider(k,options)
           extra_disks(k, ps).each_with_index do |disk, index|
-            node_config << "      vb.customize ['createhd', '--filename', '#{disk[:path]}', '--size', #{disk[:size]}]\n"
-            node_config << "      vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', #{index+1}, '--device', 0, '--type', 'hdd', '--medium', '#{disk[:path]}']\n"
+            node_config << "      prov.customize ['createhd', '--filename', '#{disk[:path]}', '--size', #{disk[:size]}]\n"
+            node_config << "      prov.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', #{index+1}, '--device', 0, '--type', 'hdd', '--medium', '#{disk[:path]}']\n"
           end
           node_config << "    end\n"
           node_config << "  end\n"
@@ -37,7 +39,6 @@ module RSpecSystem
         end
         f.write("end\n")
       end
-      log.debug "[Vagrant#create_vagrantfile] Finished creating vagrant file"
       nil
     end
   end

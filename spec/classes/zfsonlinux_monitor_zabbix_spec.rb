@@ -39,6 +39,56 @@ describe 'zfsonlinux::monitor::zabbix' do
     ])
   end
 
+  it do
+    should contain_file('zfs_trapper.rb').with({
+      'ensure'  => 'present',
+      'path'    => '/usr/local/bin/zfs_trapper.rb',
+      'source'  => 'puppet:///modules/zfsonlinux/zfs_trapper.rb',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0755',
+      'before'  => 'Cron[zfs_trapper.rb]',
+    })
+  end
+
+  it do
+    should contain_cron('zfs_trapper.rb').with({
+      'ensure'    => 'present',
+      'command'   => "/usr/local/bin/zfs_trapper.rb",
+      'user'      => 'root',
+      'hour'      => 'absent',
+      'minute'    => '*/5',
+      'month'     => 'absent',
+      'monthday'  => 'absent',
+      'weekday'   => 'absent',
+    })
+  end
+
+  it do
+    should contain_file('zpool_trapper.rb').with({
+      'ensure'  => 'present',
+      'path'    => '/usr/local/bin/zpool_trapper.rb',
+      'source'  => 'puppet:///modules/zfsonlinux/zpool_trapper.rb',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0755',
+      'before'  => 'Cron[zpool_trapper.rb]',
+    })
+  end
+
+  it do
+    should contain_cron('zpool_trapper.rb').with({
+      'ensure'    => 'present',
+      'command'   => "/usr/local/bin/zpool_trapper.rb",
+      'user'      => 'root',
+      'hour'      => 'absent',
+      'minute'    => '*/5',
+      'month'     => 'absent',
+      'monthday'  => 'absent',
+      'weekday'   => 'absent',
+    })
+  end
+
   context "monitor_tool_conf_dir => '/etc/foo'" do
     let :pre_condition do
       [
@@ -67,5 +117,21 @@ describe 'zfsonlinux::monitor::zabbix' do
     end
     
     it { should contain_file('/etc/zabbix_agentd.conf.d/zfs.conf').with_require('File[/etc/zabbix_agentd.conf.d]') }
+  end
+
+  context "include_scripts => false" do
+    let :pre_condition do
+      [
+        "class { 'sudo': }",
+        "class { 'zabbix20::agent': }",
+        "class { 'zfsonlinux::monitor':
+          monitor_tool      => 'zabbix',
+          include_scripts   => false,
+        }",
+      ]
+    end
+    
+    it { should_not contain_file('zfs_trapper.rb') }
+    it { should_not contain_file('zpool_trapper.rb') }
   end
 end
