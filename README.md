@@ -21,21 +21,6 @@ Installs ZFS and sets zfs_arc_max to 240457728
       tunables  => { 'zfs_arc_max' => '240457728' },
     }
 
-### Class: zfsonlinux::monitor
-
-Installs items necessary to monitor ZFS using Zabbix.  Currently only Zabbix is supported.
-
-    class { 'zfsonlinux::monitor':
-      monitor_tool => 'zabbix',
-    }
-
-Monitor ZFS using Zabbix and do not add the default 'zabbix' user to sudoers
-
-    class { 'zfsonlinux::monitor':
-      monitor_tool  => 'zabbix'
-      manage_sudo   => false,
-    }
-
 ### Class: zfsonlinux::scripts
 
 This class installs helper scripts for ZFS
@@ -57,10 +42,6 @@ To include partitioned disks, pass the **--exclude=** option
     alias d02 /dev/disk/by-path/pci-0000:00:0d.0-scsi-1:0:0:0
     alias d03 /dev/disk/by-path/pci-0000:00:0d.0-scsi-2:0:0:0
 
-To save the output to /etc/zfs/vdev_id.conf
-
-    # /usr/local/sbin/mk_vdev_alias.rb --exclude= --output /etc/zfs/vdev_id.conf
-
 Once this script is run udev must be triggered to generate the /dev/disk/by-vdev paths [Reference](http://zfsonlinux.org/faq.html#HowDoISetupVdevIdConf)
 
     # udevadm trigger
@@ -76,13 +57,6 @@ Once this script is run udev must be triggered to generate the /dev/disk/by-vdev
     lrwxrwxrwx 1 root root 10 Aug 16 20:13 d03-part1 -> ../../sdc1
     lrwxrwxrwx 1 root root 10 Aug 16 20:13 d03-part9 -> ../../sdc9
 
-### Class: zfsonlinux::arcstat
-
-This class manages the packages necessary to use the **arcstat.pl** script.
-
-This class is included by default when the **zfsonlinux::monitor** class is defined.
-
-Currently the RPMs are pulled from a non-official source.  See [Additional Information](#additional-information).
 
 ## Development
 
