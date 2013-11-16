@@ -14,20 +14,6 @@
 #
 class zfsonlinux::params {
 
-  $monitor_tool_defaults  = {
-    'zabbix' => {
-      'username'  => 'zabbix',
-      'conf_dir'  => '/etc/zabbix_agentd.conf.d',
-    },
-  }
-
-  $monitor_sudo_commands  = [
-    '/sbin/zpool status *',
-    '/sbin/zpool list *',
-    '/sbin/zfs list *',
-    '/sbin/zfs get *'
-  ]
-
   $os_maj_version = $::os_maj_version ? {
     undef   => inline_template('<%= scope.lookupvar(\'::operatingsystemrelease\').split(\'.\').first %>'),
     default => $::os_maj_version,
@@ -49,8 +35,6 @@ class zfsonlinux::params {
         'perl',
       ]
       $package_require        = [Yumrepo['zfs'], Package[$package_dependencies]]
-
-      $monitor_sudoers_path   = '/etc/sudoers.d/zfs'
 
       case $os_maj_version {
         '5': {
