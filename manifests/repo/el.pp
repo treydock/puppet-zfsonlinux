@@ -12,22 +12,10 @@
 #
 class zfsonlinux::repo::el {
 
-  include zfsonlinux
-  include zfsonlinux::params
-
-  $zfs_baseurl            = $zfsonlinux::zfs_baseurl
-  $zfs_source_baseurl     = $zfsonlinux::zfs_source_baseurl
-  $yum_priorities_package = $zfsonlinux::yum_priorities_package
-  $os_maj_version         = $zfsonlinux::params::os_maj_version
-
-  if !defined(Package[$yum_priorities_package]) {
-    package { $yum_priorities_package:
-      ensure  => installed,
-    }
-  }
+  include ::zfsonlinux
 
   file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
-    ensure  => present,
+    ensure  => 'file',
     source  => 'puppet:///modules/zfsonlinux/RPM-GPG-KEY-zfsonlinux',
     owner   => 'root',
     group   => 'root',
@@ -36,32 +24,40 @@ class zfsonlinux::repo::el {
 
   gpg_key { 'zfsonlinux':
     path    => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-    before  => Yumrepo['zfs','zfs-source'],
+    before  => Yumrepo['zfs','zfs-source','zfs-testing','zfs-testing-source'],
   }
 
-  # The yumrepo resources have priority set to
-  # force the installation of dkms from zfs repo
-  # instead of EPEL
-  # Ref: https://github.com/zfsonlinux/zfs/issues/1466
   yumrepo { 'zfs':
-    descr           => "ZFS of Linux for EL ${os_maj_version}",
-    baseurl         => $zfs_baseurl,
+    descr           => "ZFS on Linux for EL ${::operatingsystemmajrelease}",
+    baseurl         => $::zfsonlinux::baseurl,
     enabled         => '1',
-    metadata_expire => '604800',
+    metadata_expire => '7d',
     gpgcheck        => '1',
     gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-    priority        => '1',
-    require         => Package[$yum_priorities_package],
   }
 
   yumrepo { 'zfs-source':
-    descr           => "ZFS of Linux for EL ${os_maj_version} - Source",
-    baseurl         => $zfs_source_baseurl,
+    descr           => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Source",
+    baseurl         => $::zfsonlinux::source_baseurl,
     enabled         => '0',
-    metadata_expire => '604800',
     gpgcheck        => '1',
     gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-    priority        => '1',
-    require         => Package[$yum_priorities_package],
+  }
+
+  yumrepo { 'zfs-testing':
+    descr           => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Testing",
+    baseurl         => $::zfsonlinux::testing_baseurl,
+    enabled         => '0',
+    metadata_expire => '7d',
+    gpgcheck        => '1',
+    gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+  }
+
+  yumrepo { 'zfs-testing-source':
+    descr           => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Testing Source",
+    baseurl         => $::zfsonlinux::testing_source_baseurl,
+    enabled         => '0',
+    gpgcheck        => '1',
+    gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
   }
 }

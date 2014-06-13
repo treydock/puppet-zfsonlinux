@@ -14,34 +14,23 @@
 #
 class zfsonlinux::params {
 
-  $os_maj_version = $::os_maj_version ? {
-    undef   => inline_template('<%= scope.lookupvar(\'::operatingsystemrelease\').split(\'.\').first %>'),
-    default => $::os_maj_version,
-  }
-
   case $::osfamily {
     'RedHat': {
-      $zfs_baseurl            = "http://archive.zfsonlinux.org/epel/${os_maj_version}/${::architecture}/"
-      $zfs_source_baseurl     = "http://archive.zfsonlinux.org/epel/${os_maj_version}/SRPMS/"
-      $zfs_package_name       = 'zfs'
-      $zfs_service_name       = 'zfs'
-      $zfs_service_hasstatus  = false
-      $zfs_service_hasrestart = true
-      $zfs_service_status     = 'lsmod | egrep -q "^zfs"'
-      $package_dependencies   = [
-        'kernel-devel',
-        'gcc',
-        'make',
-        'perl',
-      ]
-      $package_require        = [Yumrepo['zfs'], Package[$package_dependencies]]
-
-      case $os_maj_version {
-        '5': {
-          fail("Unsupported operatingsystemrelease: ${::operatingsystemrelease}, module ${module_name} only supports >= 6.0")
+      case $::operatingsystemmajrelease {
+        '6': {
+          $baseurl                = "http://archive.zfsonlinux.org/epel/${::operatingsystemmajrelease}/${::architecture}/"
+          $source_baseurl         = "http://archive.zfsonlinux.org/epel/${::operatingsystemmajrelease}/SRPMS/"
+          $testing_baseurl        = "http://archive.zfsonlinux.org/epel-testing/${::operatingsystemmajrelease}/${::architecture}/"
+          $testing_source_baseurl = "http://archive.zfsonlinux.org/epel-testing/${::operatingsystemmajrelease}/SRPMS/"
+          $package_name           = 'zfs'
+          $service_name           = 'zfs'
+          $service_hasstatus      = false
+          $service_hasrestart     = true
+          $service_status         = 'lsmod | egrep -q "^zfs"'
         }
+
         default: {
-          $yum_priorities_package = 'yum-plugin-priorities'
+          fail("Unsupported operatingsystemmajrelease: ${::operatingsystemmajrelease}, module ${module_name} only supports 6.x")
         }
       }
     }

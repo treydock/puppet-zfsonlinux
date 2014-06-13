@@ -7,71 +7,96 @@ describe 'zfsonlinux' do
   
   it { should create_class('zfsonlinux') }
   it { should contain_class('zfsonlinux::params') }
-  it { should contain_class('zfsonlinux::repo') }
-  it { should_not contain_class('zfsonlinux::scripts') }
 
-  it { should contain_package('kernel-devel').with({ 'ensure' => 'present' }) }
-  it { should contain_package('gcc').with({ 'ensure' => 'present' }) }
-  it { should contain_package('make').with({ 'ensure' => 'present' }) }
-  it { should contain_package('perl').with({ 'ensure' => 'present' }) }
+  it { should contain_anchor('zfsonlinux::begin').that_comes_before('Class[zfsonlinux::repo::el]') }
+  it { should contain_class('zfsonlinux::repo::el').that_comes_before('Yumrepo[epel]') }
+  it { should contain_yumrepo('epel').that_comes_before('Class[zfsonlinux::install]') }
+  it { should contain_class('zfsonlinux::install').that_comes_before('Class[zfsonlinux::config]') }
+  it { should contain_class('zfsonlinux::config').that_comes_before('Class[zfsonlinux::service]') }
+  it { should contain_class('zfsonlinux::service').that_comes_before('Anchor[zfsonlinux::end]') }
+  it { should contain_anchor('zfsonlinux::end') }
 
-  it do
-    should contain_package('zfs').with({
-      'ensure'  => 'installed',
-      'name'    => 'zfs',
-      'require' => ['Yumrepo[zfs]', 'Package[kernel-devel]', 'Package[gcc]', 'Package[make]', 'Package[perl]'],
-    })
-  end
+  it_behaves_like 'zfsonlinux::repo::el'
 
-  it do
-    should contain_service('zfs').with({
-      'ensure'      => 'running',
-      'enable'      => 'true',
-      'hasstatus'   => 'false',
-      'hasrestart'  => 'true',
-      'status'      => 'lsmod | egrep -q "^zfs"',
-      'name'        => 'zfs',
-      'require'     => 'Package[zfs]',
-    })
-  end
-  
-  it do
-    should contain_file('/etc/modprobe.d/zfs.conf').with({
-      'ensure'  => 'present',
-      'owner'   => 'root',
-      'group'   => 'root',
-      'mode'    => '0644',
-      'before'  => 'Service[zfs]',
-    }) \
-    .with_content(/^$/)
-  end
-  
-  context "tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'}" do
-    let(:params){{ :tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'} }}
-    
+  context 'zfsonlinux::install' do
     it do
-      should contain_file('/etc/modprobe.d/zfs.conf') \
-      .with_content(/^options zfs zfs_arc_max=0 zfs_arc_min=0 $/)
+      should contain_package('zfs').with({
+        :ensure  => 'installed',
+        :name    => 'zfs',
+      })
     end
   end
 
-  context "tunables => foo" do
-    let(:params){{ :tunables => 'foo' }}
-    it { expect { should contain_file('/etc/modprobe.d/zfs.conf') }.to raise_error(Puppet::Error, /is not a Hash/) }
-  end
-  
-  context "operatingsystemrelease => 5.9" do
-    let(:facts) { default_facts.merge({ :operatingsystemrelease => "5.9" }) }
-    it { expect { should contain_class('zfsonlinux::params') }.to raise_error(Puppet::Error, /Unsupported operatingsystemrelease: 5.9/) }
-  end
-  
-  context 'include_scripts => true' do
-    let(:params) {{ :include_scripts => true }}
-    it { should contain_class('zfsonlinux::scripts') }
+  context 'zfsonlinux::config' do
+    it do
+      should contain_file('/etc/modprobe.d/zfs.conf').with({
+        :ensure  => 'file',
+        :owner   => 'root',
+        :group   => 'root',
+        :mode    => '0644',
+      }) \
+      .with_content(/^$/)
+    end
+
+    it { should have_shellvar_resource_count(10) }
+
+    [
+      { :name => 'ZED_DEBUG_LOG', :ensure => 'present', :value => '/tmp/zed.debug.log' },
+      { :name => 'ZED_EMAIL', :ensure => 'absent', :value => 'UNSET' },
+      { :name => 'ZED_EMAIL_VERBOSE', :ensure => 'present', :value => '0' },
+      { :name => 'ZED_EMAIL_INTERVAL_SECS', :ensure => 'present', :value => '3600' },
+      { :name => 'ZED_LOCKDIR', :ensure => 'present', :value => '/var/lock' },
+      { :name => 'ZED_RUNDIR', :ensure => 'present', :value => '/var/run' },
+      { :name => 'ZED_SYSLOG_PRIORITY', :ensure => 'present', :value => 'daemon.notice' },
+      { :name => 'ZED_SYSLOG_TAG', :ensure => 'present', :value => 'zed' },
+      { :name => 'ZED_SPARE_ON_IO_ERRORS', :ensure => 'present', :value => '0' },
+      { :name => 'ZED_SPARE_ON_CHECKSUM_ERRORS', :ensure => 'present', :value => '0' },
+    ].each do |h|
+      it do
+        should contain_shellvar(h[:name]).with({
+          :ensure => h[:ensure],
+          :target => '/etc/zfs/zed.d/zed.rc',
+          :value  => h[:value],
+        })
+      end
+    end
+
+    context "tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'}" do
+      let(:params){{ :tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'} }}
+
+      it do
+        should contain_file('/etc/modprobe.d/zfs.conf') \
+        .with_content(/^options zfs zfs_arc_max=0 zfs_arc_min=0 $/)
+      end
+    end
   end
 
-  context "include_scripts => 'true'" do
-    let(:params) {{ :include_scripts => 'true' }}
-    it { expect { should contain_class('zfsonlinux::scripts') }.to raise_error(Puppet::Error, /is not a boolean/) }
+  context 'zfsonlinux::service' do
+    it do
+      should contain_service('zfs').with({
+        :ensure      => 'running',
+        :enable      => 'true',
+        :hasstatus   => 'false',
+        :hasrestart  => 'true',
+        :status      => 'lsmod | egrep -q "^zfs"',
+        :name        => 'zfs',
+      })
+    end
   end
+
+  context "operatingsystemmajrelease => 5" do
+    let(:facts) { default_facts.merge({ :operatingsystemmajrelease => "5" }) }
+    it { expect { should contain_class('zfsonlinux::params') }.to raise_error(Puppet::Error, /Unsupported operatingsystemmajrelease: 5/) }
+  end
+
+  # Test validate_hash parameters
+  [
+    'tunables',
+  ].each do |param|
+    context "with #{param} => 'foo'" do
+      let(:params) {{ param.to_sym => 'foo' }}
+      it { expect { should create_class('zfsonlinux') }.to raise_error(Puppet::Error, /is not a Hash/) }
+    end
+  end
+
 end

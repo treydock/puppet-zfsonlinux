@@ -1,71 +1,207 @@
-# puppet-zfsonlinux [![Build Status](https://travis-ci.org/treydock/puppet-zfsonlinux.png)](https://travis-ci.org/treydock/puppet-zfsonlinux)
+# puppet-zfsonlinux
 
-Puppet module for managing ZFS on Linux.
+[![Build Status](https://travis-ci.org/treydock/puppet-zfsonlinux.png)](https://travis-ci.org/treydock/puppet-zfsonlinux)
 
-## Support
+####Table of Contents
 
-* CentOS 6.4 x86_64
-* Scientific Linux 6.4 x86_64
+1. [Overview](#overview)
+    * [ZED - ZFS Event Daemon information](#zed)
+2. [Usage - Configuration options](#usage)
+3. [Reference - Parameter and detailed reference to all options](#reference)
+4. [Limitations - OS compatibility, etc.](#limitations)
+5. [Development - Guide for contributing to the module](#development)
+6. [TODO](#todo)
+7. [Additional Information](#additional-information)
 
-## Reference
+## Overview
 
-### Class: zfsonlinux
+The ZFSonLinux Puppet module streamlines the installation and configuration of ZFS for Linux platforms.
 
-Installs the packages for ZFS and starts the ZFS service.
+### ZED
+
+This module now supports management of the ZED configuration options.  All the default values are set to be the defaults used if all the options in 'zed.rc' were commented out.
+
+ZED emails are disabled by ensuring 'ZED_EMAIL' is absent, unless `zed_email` has a value other than 'UNSET'.
+
+The 'ZED\_SPARE\_ON\_IO\_ERRORS' and 'ZED\_SPARE\_ON\_CHECKSUM\_ERRORS' options are set to '0' by default which disables the hot sparing functionality for those events.
+
+## Backwards Compatibility
+
+This module has just undergone a very large rewrite.  As a result it will no longer work with previous classes and configurations as before.
+
+## Usage
+
+### zfsonlinux
+
+The default behavior ensures the following:
+
+* repositories are configured
+* ZFS package installed
+* ZFS module parameters are set (if defined using 'tunables' parameter)
+* ZED options are set
+* ZFS service is started and enabled
+
+Example:
 
     class { 'zfsonlinux': }
 
-Installs ZFS and sets zfs_arc_max to 240457728
+ZFS kernel module options can be set using the `tunables` parameter.
+This example sets the 'zfs_arc_max' to 240457728
 
     class { 'zfsonlinux':
       tunables  => { 'zfs_arc_max' => '240457728' },
     }
 
-### Class: zfsonlinux::scripts
+## Reference
 
-This class installs helper scripts for ZFS
+### Classes
 
-#### Script: /usr/local/sbin/mk_vdev_alias.rb
+#### Public classes
 
-This script is intended to aid in the creation of **/etc/zfs/vdev_id.conf**
+* `zfsonlinux`: Installs and configures ZFS.
 
-By default it excludes all disks with paritions (based on lsblk output).
+#### Private classes
 
-    # /usr/local/sbin/mk_vdev_alias.rb
-    alias d01 /dev/disk/by-path/pci-0000:00:0d.0-scsi-1:0:0:0
-    alias d02 /dev/disk/by-path/pci-0000:00:0d.0-scsi-2:0:0:0
+* `zfsonlinux::repo::el`: Configures the ZFS on Linux yum repositories.
+* `zfsonlinux::install`: Installs packages.
+* `zfsonlinux::config`: Configures ZFS.
+* `zfsonlinux::service`: Manages the ZFS service.
+* `zfsonlinux::params`: Sets parameter defaults based on fact values.
 
-To include partitioned disks, pass the **--exclude=** option
+### Parameters
 
-    # /usr/local/sbin/mk_vdev_alias.rb --exclude=
-    alias d01 /dev/disk/by-path/pci-0000:00:0d.0-scsi-0:0:0:0
-    alias d02 /dev/disk/by-path/pci-0000:00:0d.0-scsi-1:0:0:0
-    alias d03 /dev/disk/by-path/pci-0000:00:0d.0-scsi-2:0:0:0
+#### zfsonlinux
 
-Once this script is run udev must be triggered to generate the /dev/disk/by-vdev paths [Reference](http://zfsonlinux.org/faq.html#HowDoISetupVdevIdConf)
+#####`baseurl`
 
-    # udevadm trigger
-    # ls -l /dev/disk/by-vdev/
-    total 0
-    lrwxrwxrwx 1 root root  9 Aug 16 20:13 d01 -> ../../sda
-    lrwxrwxrwx 1 root root 10 Aug 16 20:13 d01-part1 -> ../../sda1
-    lrwxrwxrwx 1 root root 10 Aug 16 20:13 d01-part2 -> ../../sda2
-    lrwxrwxrwx 1 root root  9 Aug 16 20:13 d02 -> ../../sdb
-    lrwxrwxrwx 1 root root 10 Aug 16 20:13 d02-part1 -> ../../sdb1
-    lrwxrwxrwx 1 root root 10 Aug 16 20:13 d02-part9 -> ../../sdb9
-    lrwxrwxrwx 1 root root  9 Aug 16 20:13 d03 -> ../../sdc
-    lrwxrwxrwx 1 root root 10 Aug 16 20:13 d03-part1 -> ../../sdc1
-    lrwxrwxrwx 1 root root 10 Aug 16 20:13 d03-part9 -> ../../sdc9
+The baseurl used for the zfs Yumrepo.
+Default is OS specific.
 
+#####`source_baseurl`
+
+The baseurl used for the zfs-source Yumrepo.
+Default is OS specific.
+
+#####`testing_baseurl`
+
+The baseurl used for the zfs-testing Yumrepo.
+Default is OS specific.
+
+#####`testing_source_baseurl`
+
+The baseurl used for the zfs-testing-source Yumrepo.
+Default is OS specific.
+
+#####`package_ensure`
+
+The zfs package ensure value. Default is 'installed'.
+
+#####`package_name`
+
+The name of the zfs package to install. Default is OS specific.
+
+#####`service_ensure`
+
+The zfs service ensure value. Default is 'running'.
+
+#####`service_enable`
+
+The zfs service enable value. Default is true.
+
+#####`service_name`
+
+The name of the zfs service. Default is OS specific.
+
+#####`service_hasstatus`
+
+The zfs service hasstatus value. Default is OS specific.
+
+#####`service_hasrestart`
+
+The zfs service hasrestart value. Default is OS specific.
+
+#####`service_status`
+
+The zfs service status value. Default is OS specific.
+
+#####`zed_debug_log`
+
+The value used for the ZED 'ZED_DEBUG_LOG' option.
+Default is '/tmp/zed.debug.log'.
+
+#####`zed_email`
+
+The value used for the ZED 'ZED_EMAIL' option.
+Default is 'UNSET' which ensures this options is absent.
+
+#####`zed_email_verbose`
+
+The value used for the ZED 'ZED_EMAIL_VERBOSE' option.
+Default is '0'.
+
+#####`zed_email_interval_secs`
+
+The value used for the ZED 'ZED_EMAIL_INTERVAL_SECS' option.
+Default is '3600'.
+
+#####`zed_lockdir`
+
+The value used for the ZED 'ZED_LOCKDIR' option.
+Default is '/var/lock'.
+
+#####`zed_rundir`
+
+The value used for the ZED 'ZED_RUNDIR' option.
+Default is '/var/run'.
+
+#####`zed_syslog_priority`
+
+The value used for the ZED 'ZED_SYSLOG_PRIORITY' option.
+Default is 'daemon.notice'.
+
+#####`zed_syslog_tag`
+
+The value used for the ZED 'ZED_SYSLOG_TAG' option.
+Default is 'zed'.
+
+#####`zed_spare_on_io_errors`
+
+The value used for the ZED 'ZED\_SPARE\_ON\_IO\_ERRORS' option.
+Default is '0'.
+
+#####`zed_spare_on_checksum_errors`
+
+The value used for the ZED 'ZED\_SPARE\_ON\_CHECKSUM\_ERRORS' option.
+Default is '0'.
+
+#####`tunables`
+
+A Hash that defines options for zfs kernel module.
+Default is an empty Hash.
+
+## Limitations
+
+This module is intended for ZFS on Linux version >= 0.6.3.
+
+This module has been tested on:
+
+* CentOS 6 x86_64
+* Scientific Linux 6 x86_64
+
+### Known Issues
+
+Changes to the `tunables` will not take effect until the ZFS kernel module is reloaded.
 
 ## Development
 
 ### Dependencies
 
+### Unit testing
+
+Testing requires the following dependencies:
+
 * rake
 * bundler
-
-### Unit testing
 
 Install gem dependencies
 
@@ -73,19 +209,14 @@ Install gem dependencies
 
 Run unit tests
 
-    bundle exec rake ci
+    bundle exec rake test
 
-### Vagrant system tests
+If you have Vagrant >= 1.2.0 installed you can run system tests
 
-If you have Vagrant >= 1.1.0 installed you can run system tests
+    bundle exec rake acceptance
 
-    bundle exec rake spec:system
-
-To test this module against Scientific Linux, the following rake command can be used
-
-    RSPEC_SET=scientific-64-x64 bundle exec rake spec:system
+## TODO
 
 ## Additional Information
 
 [ZFS on Linux](http://zfsonlinux.org/)
-[arcstat RPMs](http://yum.tamu.edu/zfsonlinux/epel/6/x86_64/repoview/)
