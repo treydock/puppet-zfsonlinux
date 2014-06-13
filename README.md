@@ -55,10 +55,24 @@ Example:
     class { 'zfsonlinux': }
 
 ZFS kernel module options can be set using the `tunables` parameter.
-This example sets the 'zfs_arc_max' to 240457728
+This example sets the 'zfs\_arc\_max' to 240457728
 
     class { 'zfsonlinux':
       tunables  => { 'zfs_arc_max' => '240457728' },
+    }
+
+Configure the ZED to send emails to root and to send emails regardless of pool health.
+
+    class { 'zfsonlinux':
+      zed_email         => 'root',
+      zed_email_verbose => '1',
+    }
+
+Configure the ZED to replace a drive with a hot spare after 1 I/O error or 10 checksum errors
+
+    class { 'zfsonlinux':
+      zed_spare_on_io_errors        => '1',
+      zed_spare_on_checksum_errors  => '10',
     }
 
 ## Reference
