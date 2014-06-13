@@ -1,10 +1,22 @@
-.idea
-.vagrant
+# IDE related
+.idea/
+.project/
+
+# Testing and development
+.vagrant/
+spec/fixtures/modules/
+spec/fixtures/manifests/
+.rspec_system/
+/Vagrantfile
+
+# Ruby and RVM
 .ruby-version
 .rvmrc
+
+# Bundler
 Gemfile.lock
-metadata.json
-spec/fixtures/modules
-pkg/
-.rspec_system/
 .bundle/
+
+# Puppet module generated
+metadata.json
+pkg/
