@@ -6,8 +6,8 @@ describe 'zfsonlinux::repo::el' do
   let(:facts) { default_facts }
 
   it { should create_class('zfsonlinux::repo::el') }
-  it { should include_class('zfsonlinux') }
-  it { should include_class('zfsonlinux::params') }
+  it { should contain_class('zfsonlinux') }
+  it { should contain_class('zfsonlinux::params') }
 
   it do
     should contain_package('yum-plugin-priorities').with({

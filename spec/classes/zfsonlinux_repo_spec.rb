@@ -8,6 +8,6 @@ describe 'zfsonlinux::repo' do
   it { should create_class('zfsonlinux::repo') }
 
   context 'osfamily => RedHat' do
-    it { should include_class('zfsonlinux::repo::el') }   
+    it { should contain_class('zfsonlinux::repo::el') }   
   end
 end

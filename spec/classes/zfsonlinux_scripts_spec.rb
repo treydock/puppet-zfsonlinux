@@ -6,7 +6,7 @@ describe 'zfsonlinux::scripts' do
   let(:facts) { default_facts }
 
   it { should create_class('zfsonlinux::scripts') }
-  it { should include_class('zfsonlinux::params') }
+  it { should contain_class('zfsonlinux::params') }
 
   it do
     should contain_file('/usr/local/sbin/mk_vdev_alias.rb').with({

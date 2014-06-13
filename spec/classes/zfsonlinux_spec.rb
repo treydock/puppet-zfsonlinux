@@ -7,8 +7,8 @@ describe 'zfsonlinux' do
   
   it { should create_class('zfsonlinux') }
   it { should contain_class('zfsonlinux::params') }
-  it { should include_class('zfsonlinux::repo') }
-  it { should_not include_class('zfsonlinux::scripts') }
+  it { should contain_class('zfsonlinux::repo') }
+  it { should_not contain_class('zfsonlinux::scripts') }
 
   it { should contain_package('kernel-devel').with({ 'ensure' => 'present' }) }
   it { should contain_package('gcc').with({ 'ensure' => 'present' }) }
@@ -62,16 +62,16 @@ describe 'zfsonlinux' do
   
   context "operatingsystemrelease => 5.9" do
     let(:facts) { default_facts.merge({ :operatingsystemrelease => "5.9" }) }
-    it { expect { should include_class('zfsonlinux::params') }.to raise_error(Puppet::Error, /Unsupported operatingsystemrelease: 5.9/) }
+    it { expect { should contain_class('zfsonlinux::params') }.to raise_error(Puppet::Error, /Unsupported operatingsystemrelease: 5.9/) }
   end
   
   context 'include_scripts => true' do
     let(:params) {{ :include_scripts => true }}
-    it { should include_class('zfsonlinux::scripts') }
+    it { should contain_class('zfsonlinux::scripts') }
   end
 
   context "include_scripts => 'true'" do
     let(:params) {{ :include_scripts => 'true' }}
-    it { expect { should include_class('zfsonlinux::scripts') }.to raise_error(Puppet::Error, /is not a boolean/) }
+    it { expect { should contain_class('zfsonlinux::scripts') }.to raise_error(Puppet::Error, /is not a boolean/) }
   end
 end

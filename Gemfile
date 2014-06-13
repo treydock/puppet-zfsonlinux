@@ -1,20 +1,24 @@
-source "https://rubygems.org"
+source "http://rubygems.org"
 
 group :development, :test do
-  gem 'rake'
+  gem 'rake',                   :require => false
+  gem 'rspec', '< 3.0.0',       :require => false
+  gem 'rspec-puppet',           :require => false, :git => 'https://github.com/rodjek/rspec-puppet.git'
   gem 'puppetlabs_spec_helper', :require => false
-  gem 'puppet-lint', '~> 0.3.2'
-  gem 'travis-lint'
-  gem 'puppet-syntax' unless ENV['PUPPET_GEM_VERSION'] =~ /2.6/
-  gem 'rspec-system-puppet', '~> 2.0'
-  #gem 'rspec-system-serverspec', '~>1.0.0'
-  # Needed to use latest serverspec gem
-  # PR submitted: https://github.com/puppetlabs/rspec-system-serverspec/pull/3
-  gem 'rspec-system-serverspec', :git => 'git://github.com/nagas/rspec-system-serverspec.git', :branch => 'serverspec/0.x'
+  gem 'puppet-lint',            :require => false
+  gem 'puppet-syntax',          :require => false
+  gem 'travis-lint',            :require => false
+  gem 'simplecov',              :require => false
+  gem 'coveralls',              :require => false
+end
+
+group :development do
+  gem 'beaker-rspec',           :require => false
+  gem 'vagrant-wrapper',        :require => false
 end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']
   gem 'puppet', puppetversion, :require => false
 else
-  gem 'puppet', :require => false
+  gem 'puppet', '~> 3.5.0', :require => false
 end
