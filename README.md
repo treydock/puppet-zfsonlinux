@@ -5,6 +5,7 @@
 ####Table of Contents
 
 1. [Overview](#overview)
+    * [ZFS Compatibility](#zfs-compatibility)
     * [ZED - ZFS Event Daemon information](#zed)
 2. [Usage - Configuration options](#usage)
 3. [Reference - Parameter and detailed reference to all options](#reference)
@@ -15,7 +16,14 @@
 
 ## Overview
 
-The ZFSonLinux Puppet module streamlines the installation and configuration of ZFS for Linux platforms.
+This module is intended to streamlines the installation and configuration of ZFS on Linux.
+
+### ZFS Compatibility
+
+ZFS on Linux Versions     | <= 0.6.2 |  0.6.3  | > 0.6.3 |
+:-------------------------|:--------:|:-------:|:-------:
+**puppet-zfsonlinux 0.x** | **yes**  | no      | no      
+**puppet-zfsonlinux 1.x** | no       | **yes** | **unknown** 
 
 ### ZED
 
@@ -25,9 +33,10 @@ ZED emails are disabled by ensuring 'ZED_EMAIL' is absent, unless `zed_email` ha
 
 The 'ZED\_SPARE\_ON\_IO\_ERRORS' and 'ZED\_SPARE\_ON\_CHECKSUM\_ERRORS' options are set to '0' by default which disables the hot sparing functionality for those events.
 
-## Backwards Compatibility
+For details regarding ZED refer to these commits:
 
-This module has just undergone a very large rewrite.  As a result it will no longer work with previous classes and configurations as before.
+* https://github.com/zfsonlinux/zfs/commit/9e246ac3d8ef9ff8aed86ecf277eea2cae3a79d3
+* https://github.com/zfsonlinux/zfs/commit/904ea2763e6576f6971be4a684e6765aaea5221
 
 ## Usage
 
@@ -63,7 +72,7 @@ This example sets the 'zfs_arc_max' to 240457728
 #### Private classes
 
 * `zfsonlinux::repo::el`: Configures the ZFS on Linux yum repositories.
-* `zfsonlinux::install`: Installs packages.
+* `zfsonlinux::install`: Installs ZFS packages.
 * `zfsonlinux::config`: Configures ZFS.
 * `zfsonlinux::service`: Manages the ZFS service.
 * `zfsonlinux::params`: Sets parameter defaults based on fact values.
