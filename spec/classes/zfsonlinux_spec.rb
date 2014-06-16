@@ -12,7 +12,8 @@ describe 'zfsonlinux' do
   it { should contain_class('zfsonlinux::repo::el').that_comes_before('Yumrepo[epel]') }
   it { should contain_yumrepo('epel').that_comes_before('Class[zfsonlinux::install]') }
   it { should contain_class('zfsonlinux::install').that_comes_before('Class[zfsonlinux::config]') }
-  it { should contain_class('zfsonlinux::config').that_comes_before('Class[zfsonlinux::service]') }
+  it { should contain_class('zfsonlinux::config').that_comes_before('Class[zfsonlinux::zed]') }
+  it { should contain_class('zfsonlinux::zed').that_comes_before('Class[zfsonlinux::service]') }
   it { should contain_class('zfsonlinux::service').that_comes_before('Anchor[zfsonlinux::end]') }
   it { should contain_anchor('zfsonlinux::end') }
 
@@ -38,6 +39,17 @@ describe 'zfsonlinux' do
       .with_content(/^$/)
     end
 
+    context "tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'}" do
+      let(:params){{ :tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'} }}
+
+      it do
+        should contain_file('/etc/modprobe.d/zfs.conf') \
+        .with_content(/^options zfs zfs_arc_max=0 zfs_arc_min=0 $/)
+      end
+    end
+  end
+
+  context 'zfsonlinux::zed' do
     it { should have_shellvar_resource_count(10) }
 
     [
@@ -61,13 +73,10 @@ describe 'zfsonlinux' do
       end
     end
 
-    context "tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'}" do
-      let(:params){{ :tunables => {'zfs_arc_max' => '0', 'zfs_arc_min' => '0'} }}
+    context 'when manage_zed => false' do
+      let(:params) {{ :manage_zed => false }}
 
-      it do
-        should contain_file('/etc/modprobe.d/zfs.conf') \
-        .with_content(/^options zfs zfs_arc_max=0 zfs_arc_min=0 $/)
-      end
+      it { should have_shellvar_resource_count(0) }
     end
   end
 
@@ -87,6 +96,16 @@ describe 'zfsonlinux' do
   context "operatingsystemmajrelease => 5" do
     let(:facts) { default_facts.merge({ :operatingsystemmajrelease => "5" }) }
     it { expect { should contain_class('zfsonlinux::params') }.to raise_error(Puppet::Error, /Unsupported operatingsystemmajrelease: 5/) }
+  end
+
+  # Test validate_bool parameters
+  [
+    'manage_zed',
+  ].each do |param|
+    context "with #{param} => 'foo'" do
+      let(:params) {{ param => 'foo' }}
+      it { expect { should create_class('zfsonlinux') }.to raise_error(Puppet::Error, /is not a boolean/) }
+    end
   end
 
   # Test validate_hash parameters

@@ -13,6 +13,7 @@ class zfsonlinux (
   $service_hasstatus            = $zfsonlinux::params::service_hasstatus,
   $service_hasrestart           = $zfsonlinux::params::service_hasrestart,
   $service_status               = $zfsonlinux::params::service_status,
+  $manage_zed                   = true,
   $zed_debug_log                = '/tmp/zed.debug.log',
   $zed_email                    = 'UNSET',
   $zed_email_verbose            = '0',
@@ -26,10 +27,12 @@ class zfsonlinux (
   $tunables                     = {},
 ) inherits zfsonlinux::params {
 
+  validate_bool($manage_zed)
   validate_hash($tunables)
 
   include ::zfsonlinux::install
   include ::zfsonlinux::config
+  include ::zfsonlinux::zed
   include ::zfsonlinux::service
 
   anchor { 'zfsonlinux::begin': }
@@ -45,6 +48,7 @@ class zfsonlinux (
       Yumrepo['epel']->
       Class['zfsonlinux::install']->
       Class['zfsonlinux::config']->
+      Class['zfsonlinux::zed']->
       Class['zfsonlinux::service']->
       Anchor['zfsonlinux::end']
     }
