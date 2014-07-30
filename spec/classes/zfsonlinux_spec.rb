@@ -22,7 +22,7 @@ describe 'zfsonlinux' do
   context 'zfsonlinux::install' do
     it do
       should contain_package('zfs').with({
-        :ensure  => 'installed',
+        :ensure  => 'present',
         :name    => 'zfs',
       })
     end

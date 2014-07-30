@@ -5,7 +5,6 @@ class zfsonlinux (
   $source_baseurl               = $zfsonlinux::params::source_baseurl,
   $testing_baseurl              = $zfsonlinux::params::testing_baseurl,
   $testing_source_baseurl       = $zfsonlinux::params::testing_source_baseurl,
-  $package_ensure               = 'installed',
   $package_name                 = $zfsonlinux::params::package_name,
   $service_ensure               = 'running',
   $service_enable               = true,
