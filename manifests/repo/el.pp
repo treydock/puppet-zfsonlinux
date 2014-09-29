@@ -15,16 +15,16 @@ class zfsonlinux::repo::el {
   include ::zfsonlinux
 
   file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
-    ensure  => 'file',
-    source  => 'puppet:///modules/zfsonlinux/RPM-GPG-KEY-zfsonlinux',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
+    ensure => 'file',
+    source => 'puppet:///modules/zfsonlinux/RPM-GPG-KEY-zfsonlinux',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
   }
 
   gpg_key { 'zfsonlinux':
-    path    => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-    before  => Yumrepo['zfs','zfs-source','zfs-testing','zfs-testing-source'],
+    path   => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+    before => Yumrepo['zfs','zfs-source','zfs-testing','zfs-testing-source'],
   }
 
   yumrepo { 'zfs':
@@ -37,11 +37,11 @@ class zfsonlinux::repo::el {
   }
 
   yumrepo { 'zfs-source':
-    descr           => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Source",
-    baseurl         => $::zfsonlinux::source_baseurl,
-    enabled         => '0',
-    gpgcheck        => '1',
-    gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+    descr    => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Source",
+    baseurl  => $::zfsonlinux::source_baseurl,
+    enabled  => '0',
+    gpgcheck => '1',
+    gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
   }
 
   yumrepo { 'zfs-testing':
@@ -54,10 +54,10 @@ class zfsonlinux::repo::el {
   }
 
   yumrepo { 'zfs-testing-source':
-    descr           => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Testing Source",
-    baseurl         => $::zfsonlinux::testing_source_baseurl,
-    enabled         => '0',
-    gpgcheck        => '1',
-    gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+    descr    => "ZFS on Linux for EL ${::operatingsystemmajrelease} - Testing Source",
+    baseurl  => $::zfsonlinux::testing_source_baseurl,
+    enabled  => '0',
+    gpgcheck => '1',
+    gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
   }
 }

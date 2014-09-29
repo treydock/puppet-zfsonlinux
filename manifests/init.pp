@@ -14,7 +14,7 @@ class zfsonlinux (
   $service_status               = $zfsonlinux::params::service_status,
   $manage_zed                   = true,
   $zed_debug_log                = '/tmp/zed.debug.log',
-  $zed_email                    = 'UNSET',
+  $zed_email                    = undef,
   $zed_email_verbose            = '0',
   $zed_email_interval_secs      = '3600',
   $zed_lockdir                  = '/var/lock',

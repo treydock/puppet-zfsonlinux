@@ -1,0 +1,11 @@
+# Managed by Puppet <%= @module_name %>. Do not edit.
+
+<% @shellvars.keys.sort.each do |key| -%>
+<% if scope.function_has_key([@comments,key]) then -%>
+# <%= [@comments[key]].flatten.join("\n# ") %>
+<% end -%>
+<% if :undef != @shellvars[key] then -%>
+<%= key %>=<%= scope.function_shellquote([@shellvars[key]]) %>
+<% end -%>
+
+<% end -%>
