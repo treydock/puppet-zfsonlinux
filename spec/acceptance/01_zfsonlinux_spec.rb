@@ -30,16 +30,55 @@ describe 'zfsonlinux class:' do
     it { should be_mode 644 }
     it { should be_owned_by 'root' }
     it { should be_grouped_into 'root' }
-    its(:content) { should match /^ZED_DEBUG_LOG=\/tmp\/zed.debug.log$/ }
-    its(:content) { should_not match /^ZED_EMAIL=.*$/ }
-    its(:content) { should match /^ZED_EMAIL_VERBOSE=0$/ }
-    its(:content) { should match /^ZED_EMAIL_INTERVAL_SECS=3600$/ }
-    its(:content) { should match /^ZED_LOCKDIR=\/var\/lock$/ }
-    its(:content) { should match /^ZED_RUNDIR=\/var\/run$/ }
-    its(:content) { should match /^ZED_SYSLOG_PRIORITY=daemon.notice$/ }
-    its(:content) { should match /^ZED_SYSLOG_TAG=zed$/ }
-    its(:content) { should match /^ZED_SPARE_ON_IO_ERRORS=0$/ }
-    its(:content) { should match /^ZED_SPARE_ON_CHECKSUM_ERRORS=0$/ }
+    it do
+      content = subject.content.split(/\n/).reject { |c| c =~ /^$|^#/ }
+      expected = [
+        'ZED_DEBUG_LOG=/tmp/zed.debug.log',
+        'ZED_EMAIL_VERBOSE=0',
+        'ZED_EMAIL_INTERVAL_SECS=3600',
+        'ZED_LOCKDIR=/var/lock',
+        'ZED_RUNDIR=/var/run',
+        'ZED_SYSLOG_PRIORITY=daemon.notice',
+        'ZED_SYSLOG_TAG=zed',
+        'ZED_SPARE_ON_IO_ERRORS=0',
+        'ZED_SPARE_ON_CHECKSUM_ERRORS=0',
+      ]
+      expect(content).to match_array(expected)
+    end
+  end
+
+  context "with zed parameters defined" do
+    it "should run successfully" do
+      pp = <<-EOS
+      class { 'zfsonlinux':
+        zed_email                     => 'root',
+        zed_spare_on_io_errors        => '1',
+        zed_spare_on_checksum_errors  => '10',
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+
+    describe file('/etc/zfs/zed.d/zed.rc') do
+      it do
+        content = subject.content.split(/\n/).reject { |c| c =~ /^$|^#/ }
+        expected = [
+          'ZED_DEBUG_LOG=/tmp/zed.debug.log',
+          'ZED_EMAIL=root',
+          'ZED_EMAIL_VERBOSE=0',
+          'ZED_EMAIL_INTERVAL_SECS=3600',
+          'ZED_LOCKDIR=/var/lock',
+          'ZED_RUNDIR=/var/run',
+          'ZED_SYSLOG_PRIORITY=daemon.notice',
+          'ZED_SYSLOG_TAG=zed',
+          'ZED_SPARE_ON_IO_ERRORS=1',
+          'ZED_SPARE_ON_CHECKSUM_ERRORS=10',
+        ]
+        expect(content).to match_array(expected)
+      end
+    end
   end
 
   context "with tunables defined" do
