@@ -217,9 +217,7 @@ Changes to the `tunables` will not take effect until the ZFS kernel module is re
 
 ## Development
 
-### Dependencies
-
-### Unit testing
+### Testing
 
 Testing requires the following dependencies:
 
@@ -236,7 +234,7 @@ Run unit tests
 
 If you have Vagrant >= 1.2.0 installed you can run system tests
 
-    bundle exec rake acceptance
+    bundle exec rake beaker
 
 ## TODO
 

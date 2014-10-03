@@ -1,0 +1,22 @@
+{
+  "name": "treydock-zfsonlinux",
+  "version": "1.0.0",
+  "author": "treydock",
+  "summary": "zfsonlinux puppet module",
+  "license": "Apache License, Version 2.0",
+  "source": "git://github.com/treydock/puppet-zfsonlinux.git",
+  "project_page": "http://github.com/treydock/puppet-zfsonlinux",
+  "issues_url": "https://github.com/treydock/puppet-zfsonlinux/issues",
+  "description": "zfsonlinux puppet module",
+  "dependencies": [
+    {"name": "stahnma/epel", "version_requirement": "0.x"},
+    {"name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0"},
+    {"name": "treydock/gpg_key", "version_requirement": "0.x"}
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [ "6.0", "7.0" ]
+    },
+  ]
+}

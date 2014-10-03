@@ -1,15 +1,4 @@
-# == Class: zfsonlinux::repo::el
-#
-# Adds the zfsonlinux repo to Enterprise Linux systems.
-#
-# === Authors
-#
-# Trey Dockendorf <treydock@gmail.com>
-#
-# === Copyright
-#
-# Copyright 2013 Trey Dockendorf
-#
+# Private class
 class zfsonlinux::repo::el {
 
   include ::zfsonlinux

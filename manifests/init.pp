@@ -1,5 +1,4 @@
-# == Class: zfsonlinux
-#
+# Class: zfsonlinux: See README.md for documentation
 class zfsonlinux (
   $baseurl                      = $zfsonlinux::params::baseurl,
   $source_baseurl               = $zfsonlinux::params::source_baseurl,

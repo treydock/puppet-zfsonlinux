@@ -1,7 +1,4 @@
-# == Class: zfsonlinux::install
-#
-# private class
-#
+# Private class
 class zfsonlinux::install {
 
   include ::zfsonlinux

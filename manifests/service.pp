@@ -1,7 +1,4 @@
-# == Class: zfsonlinux::service
-#
-# private class
-#
+# Private class
 class zfsonlinux::service {
 
   include ::zfsonlinux
