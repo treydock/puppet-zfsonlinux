@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe 'zfsonlinux' do
   include_context :defaults
-  
+
   let(:facts) { default_facts }
-  
+
   it { should create_class('zfsonlinux') }
   it { should contain_class('zfsonlinux::params') }
 
@@ -50,33 +50,25 @@ describe 'zfsonlinux' do
   end
 
   context 'zfsonlinux::zed' do
-    it { should have_shellvar_resource_count(10) }
-
-    [
-      { :name => 'ZED_DEBUG_LOG', :ensure => 'present', :value => '/tmp/zed.debug.log' },
-      { :name => 'ZED_EMAIL', :ensure => 'absent', :value => 'UNSET' },
-      { :name => 'ZED_EMAIL_VERBOSE', :ensure => 'present', :value => '0' },
-      { :name => 'ZED_EMAIL_INTERVAL_SECS', :ensure => 'present', :value => '3600' },
-      { :name => 'ZED_LOCKDIR', :ensure => 'present', :value => '/var/lock' },
-      { :name => 'ZED_RUNDIR', :ensure => 'present', :value => '/var/run' },
-      { :name => 'ZED_SYSLOG_PRIORITY', :ensure => 'present', :value => 'daemon.notice' },
-      { :name => 'ZED_SYSLOG_TAG', :ensure => 'present', :value => 'zed' },
-      { :name => 'ZED_SPARE_ON_IO_ERRORS', :ensure => 'present', :value => '0' },
-      { :name => 'ZED_SPARE_ON_CHECKSUM_ERRORS', :ensure => 'present', :value => '0' },
-    ].each do |h|
-      it do
-        should contain_shellvar(h[:name]).with({
-          :ensure => h[:ensure],
-          :target => '/etc/zfs/zed.d/zed.rc',
-          :value  => h[:value],
-        })
-      end
-    end
+    it { should_not contain_file('/etc/zfs/zed.d/zed.rc').with_content(
+        /ZED_EMAIL=undef\n/) }
+    it {
+      verify_contents(catalogue, '/etc/zfs/zed.d/zed.rc', [
+        'ZED_DEBUG_LOG=/tmp/zed.debug.log',
+        'ZED_EMAIL_INTERVAL_SECS=3600',
+        'ZED_EMAIL_VERBOSE=0',
+        'ZED_LOCKDIR=/var/lock',
+        'ZED_RUNDIR=/var/run',
+        'ZED_SPARE_ON_CHECKSUM_ERRORS=0',
+        'ZED_SPARE_ON_IO_ERRORS=0',
+        'ZED_SYSLOG_PRIORITY=daemon.notice',
+        'ZED_SYSLOG_TAG=zed',
+      ])
+    }
 
     context 'when manage_zed => false' do
       let(:params) {{ :manage_zed => false }}
-
-      it { should have_shellvar_resource_count(0) }
+      it { should_not contain_file('/etc/zfs/zed.d/zed.rc') }
     end
   end
 
