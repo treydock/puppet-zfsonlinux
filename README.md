@@ -1,6 +1,6 @@
 # puppet-zfsonlinux
 
-[![Build Status](https://travis-ci.org/treydock/puppet-zfsonlinux.png)](https://travis-ci.org/treydock/puppet-zfsonlinux)
+[![Build Status](https://travis-ci.org/treydock/puppet-zfsonlinux.svg?branch=master)](https://travis-ci.org/treydock/puppet-zfsonlinux)
 
 ####Table of Contents
 
