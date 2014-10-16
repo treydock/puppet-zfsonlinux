@@ -1,9 +1,13 @@
 require 'spec_helper'
 
 describe 'zfsonlinux' do
-  include_context :defaults
-
-  let(:facts) { default_facts }
+  let :facts do
+    {
+      :osfamily                   => 'RedHat',
+      :operatingsystemmajrelease  => '6',
+      :architecture               => 'x86_64',
+    }
+  end
 
   it { should create_class('zfsonlinux') }
   it { should contain_class('zfsonlinux::params') }
@@ -86,7 +90,14 @@ describe 'zfsonlinux' do
   end
 
   context "operatingsystemmajrelease => 5" do
-    let(:facts) { default_facts.merge({ :operatingsystemmajrelease => "5" }) }
+    let :facts do
+      {
+        :osfamily                   => 'RedHat',
+        :operatingsystemmajrelease  => '5',
+        :architecture               => 'x86_64',
+      }
+    end
+
     it { expect { should contain_class('zfsonlinux::params') }.to raise_error(Puppet::Error, /Unsupported operatingsystemmajrelease: 5/) }
   end
 

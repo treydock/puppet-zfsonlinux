@@ -14,16 +14,4 @@ rescue Exception => e
   warn "Coveralls disabled"
 end
 
-shared_context :defaults do
-  let :default_facts do
-    {
-      :osfamily                   => 'RedHat',
-      :operatingsystem            => 'CentOS',
-      :operatingsystemrelease     => '6.5',
-      :operatingsystemmajrelease  => '6',
-      :architecture               => 'x86_64',
-    }
-  end
-end
-
 at_exit { RSpec::Puppet::Coverage.report! }
