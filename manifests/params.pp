@@ -14,7 +14,7 @@ class zfsonlinux::params {
         $service_hasrestart     = true
         $service_status         = 'lsmod | egrep -q "^zfs"'
       } else {
-        fail("Unsupported operatingsystemmajrelease: ${::operatingsystemmajrelease}, module ${module_name} only supports 6.x")
+        fail("Unsupported operatingsystemmajrelease: ${::operatingsystemmajrelease}, module ${module_name} only supports 6.x or greater")
       }
     }
 

@@ -34,7 +34,6 @@ RSpec.configure do |c|
       on host, puppet('module', 'install', 'puppetlabs/stdlib'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'stahnma/epel'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'treydock/gpg_key'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module', 'install', 'domcleal-augeasproviders'), { :acceptable_exit_codes => [0,1] }
 
       # Apply host resource
       apply_manifest_on(host, host_pp, :catch_failures => true)

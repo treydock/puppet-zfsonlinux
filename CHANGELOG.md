@@ -4,7 +4,7 @@ Release notes for the treydock-zfsonlinux module.
 
 ------------------------------------------
 
-#### 2014-10-02 Release 1.0.0
+#### 2014-11-07 Release 1.0.0
 
 This release is a major rewrite of this module.  It is written with ZFS on Linux 0.6.3 in mind.
 
@@ -22,6 +22,7 @@ Detailed Changes:
 * Remove zfs_version fact in favor of the fact provided by Facter
 * Remove mk\_vdev\_alias.rb script was it was a bit too site-specific
 * Update module dependency versions to be less restrictive
+* Remove dependency on augeasproviders
 * Refactor unit tests to match changes to module
 * Add beaker-rspec acceptance tests
 * Update README.md

@@ -17,6 +17,14 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [ "6.0", "7.0" ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [ "6.0", "7.0" ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [ "6.0", "7.0" ]
     }
   ]
 }
