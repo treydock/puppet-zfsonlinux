@@ -9,7 +9,7 @@
   "issues_url": "https://github.com/treydock/puppet-zfsonlinux/issues",
   "description": "zfsonlinux puppet module",
   "dependencies": [
-    {"name": "stahnma/epel", "version_requirement": "0.x"},
+    {"name": "stahnma/epel", "version_requirement": ">= 1.0.0"},
     {"name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0"},
     {"name": "treydock/gpg_key", "version_requirement": "0.x"}
   ],
