@@ -4,12 +4,16 @@ describe 'zfsonlinux class:' do
   context "with default parameters" do
     it 'should run successfully' do
       pp = <<-EOS
-        class { 'zfsonlinux': }
+        class { 'zfsonlinux': tunables => {'zfs_arc_max' => '240457728'} }
       EOS
 
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
     end
+  end
+
+  describe file('/sys/module/zfs/parameters/zfs_arc_max') do
+    it { should contain "240457728" }
   end
 
   describe command("/sbin/zpool create -f tank mirror sdb sdc") do
@@ -62,6 +66,7 @@ describe 'zfsonlinux class:' do
         zed_email                     => 'root',
         zed_spare_on_io_errors        => '1',
         zed_spare_on_checksum_errors  => '10',
+        tunables                      => {'zfs_arc_max' => '240457728'},
       }
       EOS
 
@@ -89,23 +94,4 @@ describe 'zfsonlinux class:' do
     end
   end
 
-  context "with tunables defined" do
-    it 'should run successfully' do
-      pp = <<-EOS
-        class { 'zfsonlinux': tunables => {'zfs_arc_max' => '240457728'} }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
-      # Need to force ZFS to reload
-      shell 'zfs unmount -a'
-      shell 'service zfs stop'
-      shell 'modprobe -r zfs'
-
-      apply_manifest(pp, :catch_changes => true)
-    end
-  end
-
-  describe file('/sys/module/zfs/parameters/zfs_arc_max') do
-    it { should contain "240457728" }
-  end
 end
