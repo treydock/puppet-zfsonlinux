@@ -27,11 +27,13 @@ ZFS on Linux Versions     | <= 0.6.2 |  0.6.3  | > 0.6.3 |
 
 ### ZED
 
-This module now supports management of the ZED configuration options.  All the default values are set to be the defaults used if all the options in 'zed.rc' were commented out.
+This module now supports management of the ZED configuration options and the ZED service.  All the default values are set to be the defaults used if all the options in 'zed.rc' were commented out.
 
 ZED emails are disabled by ensuring 'ZED_EMAIL' is absent, unless `zed_email` has a value other than 'UNSET'.
 
 The 'ZED\_SPARE\_ON\_IO\_ERRORS' and 'ZED\_SPARE\_ON\_CHECKSUM\_ERRORS' options are set to '0' by default which disables the hot sparing functionality for those events.
+
+The ZED service is started at boot by adding a line to `/etc/rc.local` and is started if the `manage_zed` and `enable_zed` parameters are both `true`.
 
 For details regarding ZED refer to these commits:
 
@@ -146,6 +148,16 @@ The zfs service hasrestart value. Default is OS specific.
 #####`service_status`
 
 The zfs service status value. Default is OS specific.
+
+#####`manage_zed`
+
+Boolean that sets if ZED configuration and service should be managed.
+Default is true.
+
+#####`enable_zed`
+
+Boolean that sets if the ZED service should be enabled.
+Default is true.
 
 #####`zed_debug_log`
 

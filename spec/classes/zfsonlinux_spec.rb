@@ -70,9 +70,34 @@ describe 'zfsonlinux' do
       ])
     }
 
+    it do
+      should contain_file_line('enable zed').with({
+        :path   => '/etc/rc.local',
+        :line   => '/sbin/zed',
+        :after  => 'touch /var/lock/subsys/local',
+      })
+    end
+
+    it do
+      should contain_service('zed').with({
+        :ensure   => 'running',
+        :binary   => 'zed',
+        :provider => 'base',
+      })
+    end
+
     context 'when manage_zed => false' do
       let(:params) {{ :manage_zed => false }}
       it { should_not contain_file('/etc/zfs/zed.d/zed.rc') }
+      it { should_not contain_file_line('enable zed') }
+      it { should_not contain_service('zed') }
+    end
+
+    context 'when enable_zed => false' do
+      let(:params) {{ :enable_zed => false }}
+      it { should contain_file('/etc/zfs/zed.d/zed.rc') }
+      it { should_not contain_file_line('enable zed') }
+      it { should_not contain_service('zed') }
     end
   end
 
@@ -104,6 +129,7 @@ describe 'zfsonlinux' do
   # Test validate_bool parameters
   [
     'manage_zed',
+    'enable_zed',
   ].each do |param|
     context "with #{param} => 'foo'" do
       let(:params) {{ param => 'foo' }}

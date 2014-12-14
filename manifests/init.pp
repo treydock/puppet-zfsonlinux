@@ -12,6 +12,7 @@ class zfsonlinux (
   $service_hasrestart           = $zfsonlinux::params::service_hasrestart,
   $service_status               = $zfsonlinux::params::service_status,
   $manage_zed                   = true,
+  $enable_zed                   = true,
   $zed_debug_log                = '/tmp/zed.debug.log',
   $zed_email                    = undef,
   $zed_email_verbose            = '0',
@@ -25,7 +26,7 @@ class zfsonlinux (
   $tunables                     = {},
 ) inherits zfsonlinux::params {
 
-  validate_bool($manage_zed)
+  validate_bool($manage_zed, $enable_zed)
   validate_hash($tunables)
 
   include ::zfsonlinux::install

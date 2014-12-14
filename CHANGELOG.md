@@ -4,7 +4,7 @@ Release notes for the treydock-zfsonlinux module.
 
 ------------------------------------------
 
-#### 2014-11-07 Release 1.0.0
+#### 2014-12-14 Release 1.0.0
 
 This release is a major rewrite of this module.  It is written with ZFS on Linux 0.6.3 in mind.
 
@@ -13,6 +13,7 @@ Detailed Changes:
 * Add support for EL7
 * Refactor module resources into classes and chain using the Anchor pattern
 * Manage ZED configuration options
+* Manage ZED service
 * Manage the zfs-testing and zfs-testing-source Yumrepos
 * Remove yum-plugin-priority package management
 * Remove priority from Yumrepo resources

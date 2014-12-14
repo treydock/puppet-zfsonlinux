@@ -47,6 +47,14 @@ describe 'zfsonlinux class:' do
     end
   end
 
+  describe file('/etc/rc.local') do
+    its(:content) { should match /^\/sbin\/zed$/ }
+  end
+
+  describe process('zed') do
+    it { should be_running }
+  end
+
   context "with zed parameters defined" do
     it "should run successfully" do
       pp = <<-EOS

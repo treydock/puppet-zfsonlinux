@@ -48,5 +48,19 @@ class zfsonlinux::zed {
       content => template('zfsonlinux/zed.rc.erb'),
       mode    => '0644',
     }
+
+    if $::zfsonlinux::enable_zed {
+      file_line { 'enable zed':
+        path  => '/etc/rc.local',
+        line  => '/sbin/zed',
+        after => 'touch /var/lock/subsys/local',
+      }
+
+      service { 'zed':
+        ensure   => 'running',
+        binary   => 'zed',
+        provider => 'base',
+      }
+    }
   }
 }
