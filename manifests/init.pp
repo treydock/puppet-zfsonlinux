@@ -29,6 +29,14 @@ class zfsonlinux (
   validate_bool($manage_zed, $enable_zed)
   validate_hash($tunables)
 
+  if $enable_zed {
+    $zed_service_ensure = 'running'
+    $zed_service_enable = 'present'
+  } else {
+    $zed_service_ensure = 'stopped'
+    $zed_service_enable = 'absent'
+  }
+
   include ::zfsonlinux::install
   include ::zfsonlinux::config
   include ::zfsonlinux::zed

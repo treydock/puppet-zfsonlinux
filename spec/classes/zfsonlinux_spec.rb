@@ -72,6 +72,7 @@ describe 'zfsonlinux' do
 
     it do
       should contain_file_line('enable zed').with({
+        :ensure => 'present',
         :path   => '/etc/rc.local',
         :line   => '/sbin/zed',
         :after  => 'touch /var/lock/subsys/local',
@@ -96,8 +97,8 @@ describe 'zfsonlinux' do
     context 'when enable_zed => false' do
       let(:params) {{ :enable_zed => false }}
       it { should contain_file('/etc/zfs/zed.d/zed.rc') }
-      it { should_not contain_file_line('enable zed') }
-      it { should_not contain_service('zed') }
+      it { should contain_file_line('enable zed').with_ensure('absent') }
+      it { should contain_service('zed').with_ensure('stopped') }
     end
   end
 
