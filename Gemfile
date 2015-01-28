@@ -7,8 +7,8 @@ group :development, :test do
   gem 'serverspec',               :require => false
   gem 'puppet-lint',              :require => false
   gem 'puppet-syntax',            :require => false
-  gem 'beaker',                   :require => false
-  gem 'beaker-rspec',             :require => false
+  gem 'beaker',                   :require => false unless RUBY_VERSION =~ /^1.8/
+  gem 'beaker-rspec',             :require => false unless RUBY_VERSION =~ /^1.8/
   gem 'pry',                      :require => false unless RUBY_VERSION =~ /^1.8/
   gem 'simplecov',                :require => false
   gem 'coveralls',                :require => false
