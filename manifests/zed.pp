@@ -56,10 +56,12 @@ class zfsonlinux::zed {
       after  => 'touch /var/lock/subsys/local',
     }
 
-    service { 'zed':
-      ensure   => $::zfsonlinux::zed_service_ensure,
-      binary   => 'zed',
-      provider => 'base',
+    if $::zfsonlinux::manage_zed_service {
+      service { 'zed':
+        ensure   => $::zfsonlinux::zed_service_ensure,
+        binary   => 'zed',
+        provider => 'base',
+      }
     }
   }
 }

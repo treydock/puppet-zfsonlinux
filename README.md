@@ -20,10 +20,11 @@ This module is intended to streamlines the installation and configuration of ZFS
 
 ### ZFS Compatibility
 
-ZFS on Linux Versions     | <= 0.6.2 |  0.6.3  | > 0.6.3 |
-:-------------------------|:--------:|:-------:|:-------:
-**puppet-zfsonlinux 0.x** | **yes**  | no      | no      
-**puppet-zfsonlinux 1.x** | no       | **yes** | **unknown** 
+ZFS on Linux Versions     | <= 0.6.2 |  0.6.3  | 0.6.4   | > 0.6.4     |
+:-------------------------|:--------:|:-------:|:-------:|:-----------:|
+**puppet-zfsonlinux 0.x** | **yes**  | no      | no      | no          |
+**puppet-zfsonlinux 1.x** | no       | **yes** | **yes** | **unknown** |
+**puppet-zfsonlinux 2.x** | no       | **yes** | **yes** | **unknown** |
 
 ### ZED
 
@@ -90,6 +91,7 @@ Configure the ZED to replace a drive with a hot spare after 1 I/O error or 10 ch
 * `zfsonlinux::repo::el`: Configures the ZFS on Linux yum repositories.
 * `zfsonlinux::install`: Installs ZFS packages.
 * `zfsonlinux::config`: Configures ZFS.
+* `zfsonlinux::zed`: Manages the ZFS Event Daemon.
 * `zfsonlinux::service`: Manages the ZFS service.
 * `zfsonlinux::params`: Sets parameter defaults based on fact values.
 
@@ -151,8 +153,15 @@ The zfs service status value. Default is OS specific.
 
 #####`manage_zed`
 
-Boolean that sets if ZED configuration and service should be managed.
+Boolean that sets if ZED configuration should be managed.
 Default is true.
+
+#####`manage_zed_service`
+
+Boolean that sets if ZED service should be managed.
+Default is true.
+
+This should be set to `false` for ZoL >= 0.6.4
 
 #####`enable_zed`
 
@@ -213,6 +222,13 @@ Default is '0'.
 
 A Hash that defines options for zfs kernel module.
 Default is an empty Hash.
+
+#####`zfs_arc_max_percent`
+
+This value is used to set zfs\_arc\_max tunable based on percent of memory on the host system.
+Default is `undef`.
+
+If `zfs_arc_max` is set in `tunables`, that value will take priority over the value generated from the percentage.
 
 ## Limitations
 

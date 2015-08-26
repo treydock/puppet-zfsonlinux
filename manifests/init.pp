@@ -12,6 +12,7 @@ class zfsonlinux (
   $service_hasrestart           = $zfsonlinux::params::service_hasrestart,
   $service_status               = $zfsonlinux::params::service_status,
   $manage_zed                   = true,
+  $manage_zed_service           = true,
   $enable_zed                   = true,
   $zed_debug_log                = '/tmp/zed.debug.log',
   $zed_email                    = undef,
@@ -24,18 +25,34 @@ class zfsonlinux (
   $zed_spare_on_io_errors       = '0',
   $zed_spare_on_checksum_errors = '0',
   $tunables                     = {},
+  $zfs_arc_max_percent          = undef,
 ) inherits zfsonlinux::params {
 
-  validate_bool($manage_zed, $enable_zed)
+  validate_bool($manage_zed, $manage_zed_service, $enable_zed)
   validate_hash($tunables)
 
   if $enable_zed {
+    if $manage_zed_service {
+      $zed_service_enable = 'present'
+    } else {
+      $zed_service_enable = 'absent'
+    }
     $zed_service_ensure = 'running'
-    $zed_service_enable = 'present'
   } else {
     $zed_service_ensure = 'stopped'
     $zed_service_enable = 'absent'
   }
+
+  if $zfs_arc_max_percent {
+    $_zfs_arc_max_percent = percent_memory_to_bytes($zfs_arc_max_percent)
+  } else {
+    $_zfs_arc_max_percent = undef
+  }
+
+  $_extra_tunables = delete_undef_values({
+    'zfs_arc_max' => $_zfs_arc_max_percent
+  })
+  $_tunables = merge($_extra_tunables, $tunables)
 
   include ::zfsonlinux::install
   include ::zfsonlinux::config

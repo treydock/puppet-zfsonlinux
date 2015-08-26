@@ -3,7 +3,7 @@ class zfsonlinux::config {
 
   include ::zfsonlinux
 
-  $tunables = $::zfsonlinux::tunables
+  $tunables = $::zfsonlinux::_tunables
 
   file { '/etc/modprobe.d/zfs.conf':
     ensure  => 'file',

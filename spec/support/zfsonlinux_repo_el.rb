@@ -24,8 +24,8 @@ shared_examples_for 'zfsonlinux::repo::el' do
   it do
     should contain_yumrepo('zfs').only_with({
       :name             => 'zfs',
-      :descr            => 'ZFS on Linux for EL 6',
-      :baseurl          => 'http://archive.zfsonlinux.org/epel/6/x86_64/',
+      :descr            => "ZFS on Linux for EL #{facts[:operatingsystemmajrelease]}",
+      :baseurl          => "http://archive.zfsonlinux.org/epel/#{facts[:operatingsystemmajrelease]}/x86_64/",
       :enabled          => '1',
       :metadata_expire  => '7d',
       :gpgcheck         => '1',
@@ -36,8 +36,8 @@ shared_examples_for 'zfsonlinux::repo::el' do
   it do
     should contain_yumrepo('zfs-source').only_with({
       :name             => 'zfs-source',
-      :descr            => 'ZFS on Linux for EL 6 - Source',
-      :baseurl          => 'http://archive.zfsonlinux.org/epel/6/SRPMS/',
+      :descr            => "ZFS on Linux for EL #{facts[:operatingsystemmajrelease]} - Source",
+      :baseurl          => "http://archive.zfsonlinux.org/epel/#{facts[:operatingsystemmajrelease]}/SRPMS/",
       :enabled          => '0',
       :gpgcheck         => '1',
       :gpgkey           => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
@@ -47,8 +47,8 @@ shared_examples_for 'zfsonlinux::repo::el' do
   it do
     should contain_yumrepo('zfs-testing').only_with({
       :name             => 'zfs-testing',
-      :descr            => 'ZFS on Linux for EL 6 - Testing',
-      :baseurl          => 'http://archive.zfsonlinux.org/epel-testing/6/x86_64/',
+      :descr            => "ZFS on Linux for EL #{facts[:operatingsystemmajrelease]} - Testing",
+      :baseurl          => "http://archive.zfsonlinux.org/epel-testing/#{facts[:operatingsystemmajrelease]}/x86_64/",
       :enabled          => '0',
       :metadata_expire  => '7d',
       :gpgcheck         => '1',
@@ -59,8 +59,8 @@ shared_examples_for 'zfsonlinux::repo::el' do
   it do
     should contain_yumrepo('zfs-testing-source').only_with({
       :name             => 'zfs-testing-source',
-      :descr            => 'ZFS on Linux for EL 6 - Testing Source',
-      :baseurl          => 'http://archive.zfsonlinux.org/epel-testing/6/SRPMS/',
+      :descr            => "ZFS on Linux for EL #{facts[:operatingsystemmajrelease]} - Testing Source",
+      :baseurl          => "http://archive.zfsonlinux.org/epel-testing/#{facts[:operatingsystemmajrelease]}/SRPMS/",
       :enabled          => '0',
       :gpgcheck         => '1',
       :gpgkey           => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
