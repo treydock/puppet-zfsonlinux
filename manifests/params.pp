@@ -3,7 +3,7 @@ class zfsonlinux::params {
 
   case $::osfamily {
     'RedHat': {
-      if $::operatingsystemmajrelease >= 6 {
+      if versioncmp($::operatingsystemmajrelease, '6') >= 0 {
         $baseurl                = "http://archive.zfsonlinux.org/epel/${::operatingsystemmajrelease}/${::architecture}/"
         $source_baseurl         = "http://archive.zfsonlinux.org/epel/${::operatingsystemmajrelease}/SRPMS/"
         $testing_baseurl        = "http://archive.zfsonlinux.org/epel-testing/${::operatingsystemmajrelease}/${::architecture}/"
