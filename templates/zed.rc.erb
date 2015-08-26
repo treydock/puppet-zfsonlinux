@@ -4,8 +4,10 @@
 <% if scope.function_has_key([@comments,key]) then -%>
 # <%= [@comments[key]].flatten.join("\n# ") %>
 <% end -%>
-<% if :undef != @shellvars[key] then -%>
+<% if :undef != @shellvars[key] && !@shellvars[key].nil? then -%>
 <%= key %>=<%= scope.function_shellquote([@shellvars[key]]) %>
+<% else -%>
+# <%= key %>=
 <% end -%>
 
 <% end -%>

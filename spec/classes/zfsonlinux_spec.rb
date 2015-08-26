@@ -93,6 +93,7 @@ describe 'zfsonlinux' do
         it {
           verify_contents(catalogue, '/etc/zfs/zed.d/zed.rc', [
             'ZED_DEBUG_LOG=/tmp/zed.debug.log',
+            '# ZED_EMAIL=',
             'ZED_EMAIL_INTERVAL_SECS=3600',
             'ZED_EMAIL_VERBOSE=0',
             'ZED_LOCKDIR=/var/lock',
