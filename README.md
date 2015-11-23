@@ -23,8 +23,8 @@ This module is intended to streamlines the installation and configuration of ZFS
 ZFS on Linux Versions     | <= 0.6.2 |  0.6.3  | 0.6.4   | > 0.6.4     |
 :-------------------------|:--------:|:-------:|:-------:|:-----------:|
 **puppet-zfsonlinux 0.x** | **yes**  | no      | no      | no          |
-**puppet-zfsonlinux 1.x** | no       | **yes** | **yes** | **unknown** |
-**puppet-zfsonlinux 2.x** | no       | **yes** | **yes** | **unknown** |
+**puppet-zfsonlinux 1.x** | no       | **yes** | **yes** | **no**      |
+**puppet-zfsonlinux 2.x** | no       | **yes** | **yes** | **yes**     |
 
 ### ZED
 
@@ -104,6 +104,12 @@ Configure the ZED to replace a drive with a hot spare after 1 I/O error or 10 ch
 ### Parameters
 
 #### zfsonlinux
+
+#####`release_url`
+
+The URL for zfs-release RPM.  This is used to install the necessary GPG key.
+
+Defaults to `http://archive.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm`
 
 #####`baseurl`
 

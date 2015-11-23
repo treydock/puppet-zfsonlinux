@@ -4,7 +4,7 @@ Release notes for the treydock-zfsonlinux module.
 
 ------------------------------------------
 
-#### TBD Release 1.0.0
+#### 2015-11-23 Release 1.0.0
 
 This release is a major rewrite of this module.  Primary ZFS on Linux version supported is 0.6.3.  Version 0.6.4 has also been tested but parameters like `manage_zed_service` should not use the default value.
 
