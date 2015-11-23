@@ -43,4 +43,9 @@ class zfsonlinux::repo::el {
     gpgcheck => '1',
     gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
   }
+
+  yum::versionlock { "0:zfs-${zfsonlinux::_package_version}.*":
+    ensure => 'present',
+  }
+
 }

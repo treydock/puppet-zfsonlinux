@@ -1,6 +1,12 @@
 # Private class
 class zfsonlinux::params {
 
+  if $::zol_version {
+    $version = $::zol_version
+  } else {
+    $version = '0.6.5.3'
+  }
+
   case $::osfamily {
     'RedHat': {
       if versioncmp($::operatingsystemmajrelease, '6') >= 0 {
@@ -14,6 +20,7 @@ class zfsonlinux::params {
         $service_hasstatus      = false
         $service_hasrestart     = true
         $service_status         = 'lsmod | egrep -q "^zfs"'
+        $service_config_path    = '/etc/sysconfig/zfs'
       } else {
         fail("Unsupported operatingsystemmajrelease: ${::operatingsystemmajrelease}, module ${module_name} only supports 6.x or greater")
       }

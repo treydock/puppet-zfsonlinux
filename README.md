@@ -34,7 +34,9 @@ ZED emails are disabled by ensuring 'ZED_EMAIL' is absent, unless `zed_email` ha
 
 The 'ZED\_SPARE\_ON\_IO\_ERRORS' and 'ZED\_SPARE\_ON\_CHECKSUM\_ERRORS' options are set to '0' by default which disables the hot sparing functionality for those events.
 
-The ZED service is started at boot by adding a line to `/etc/rc.local` and is started if the `manage_zed` and `enable_zed` parameters are both `true`.
+For ZoL < 0.6.5 the ZED service is started at boot by adding a line to `/etc/rc.local` and is started if the `manage_zed` and `enable_zed` parameters are both `true`.
+
+For ZoL >= 0.6.5 the ZED service is managed via `zfs-zed` service and is enabled if `enable_zed` is `true`.
 
 For details regarding ZED refer to these commits:
 
@@ -105,6 +107,10 @@ Configure the ZED to replace a drive with a hot spare after 1 I/O error or 10 ch
 
 #### zfsonlinux
 
+#####`version`
+
+The version of ZFS to manage.  The default is either the version of zfs package already installed.  If ZFS is not already installed the default is `0.6.5.3`.
+
 #####`release_url`
 
 The URL for zfs-release RPM.  This is used to install the necessary GPG key.
@@ -131,10 +137,6 @@ Default is OS specific.
 The baseurl used for the zfs-testing-source Yumrepo.
 Default is OS specific.
 
-#####`package_ensure`
-
-The zfs package ensure value. Default is 'installed'.
-
 #####`package_name`
 
 The name of the zfs package to install. Default is OS specific.
@@ -143,25 +145,55 @@ The name of the zfs package to install. Default is OS specific.
 
 The zfs service ensure value. Default is 'running'.
 
+**Only applies to ZoL < 0.6.5**
+
 #####`service_enable`
 
 The zfs service enable value. Default is true.
+
+**Only applies to ZoL < 0.6.5**
 
 #####`service_name`
 
 The name of the zfs service. Default is OS specific.
 
+**Only applies to ZoL < 0.6.5**
+
 #####`service_hasstatus`
 
 The zfs service hasstatus value. Default is OS specific.
+
+**Only applies to ZoL < 0.6.5**
 
 #####`service_hasrestart`
 
 The zfs service hasrestart value. Default is OS specific.
 
+**Only applies to ZoL < 0.6.5**
+
 #####`service_status`
 
 The zfs service status value. Default is OS specific.
+
+**Only applies to ZoL < 0.6.5**
+
+#####`enable_import_service`
+
+Boolean that determines if zfs-import service should be enabled.  Defaults to `true`.
+
+**Only applies to ZoL >= 0.6.5**
+
+#####`enable_mount_service`
+
+Boolean that determines if zfs-mount service should be enabled.  Defaults to `true`.
+
+**Only applies to ZoL >= 0.6.5**
+
+#####`enable_share_service`
+
+Boolean that determines if zfs-share service should be enabled.  Defaults to `true`.
+
+**Only applies to ZoL >= 0.6.5**
 
 #####`manage_zed`
 
@@ -175,6 +207,8 @@ Default is true.
 
 This should be set to `false` for ZoL >= 0.6.4
 
+**Only applies to ZoL < 0.6.5**
+
 #####`enable_zed`
 
 Boolean that sets if the ZED service should be enabled.
@@ -187,17 +221,17 @@ Default is '/tmp/zed.debug.log'.
 
 #####`zed_email`
 
-The value used for the ZED 'ZED_EMAIL' option.
-Default is 'UNSET' which ensures this options is absent.
+The value used for the ZED 'ZED_EMAIL' option.  In ZoL >= 0.6.5 this sets the ZED\_EMAIL\_ADDR option.
+Default is `undef` which ensures this options is absent.
 
 #####`zed_email_verbose`
 
-The value used for the ZED 'ZED_EMAIL_VERBOSE' option.
+The value used for the ZED 'ZED_EMAIL_VERBOSE' option.  In ZoL >= 0.6.5 this sets the ZED\_NOTIFY\_VERBOSE option.
 Default is '0'.
 
 #####`zed_email_interval_secs`
 
-The value used for the ZED 'ZED_EMAIL_INTERVAL_SECS' option.
+The value used for the ZED 'ZED_EMAIL_INTERVAL_SECS' option.  In ZoL >= 0.6.5 this sets the ZED\_NOTIFY\_INTERVAL\_SECS option.
 Default is '3600'.
 
 #####`zed_lockdir`

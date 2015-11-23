@@ -4,7 +4,7 @@ class zfsonlinux::install {
   include ::zfsonlinux
 
   package { 'zfs':
-    ensure => 'present',
+    ensure => $zfsonlinux::_package_ensure,
     name   => $::zfsonlinux::package_name,
   }
 

@@ -4,7 +4,7 @@ require 'rspec-puppet-facts'
 include RspecPuppetFacts
 
 dir = File.expand_path(File.dirname(__FILE__))
-Dir["#{dir}/support/**/*.rb"].sort.each { |f| require f }
+Dir["#{dir}/shared_examples/**/*.rb"].sort.each { |f| require f }
 
 # Workaround for no method in rspec-puppet to pass undef through :params
 class Undef

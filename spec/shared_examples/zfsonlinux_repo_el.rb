@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-shared_examples_for 'zfsonlinux::repo::el' do
+shared_examples_for 'zfsonlinux::repo::el' do |facts|
   it { should create_class('zfsonlinux::repo::el') }
   it { should contain_class('zfsonlinux') }
 
@@ -59,26 +57,57 @@ shared_examples_for 'zfsonlinux::repo::el' do
     })
   end
 
+  it do
+    should contain_yum__versionlock("0:zfs-0.6.5.3-1.el#{facts[:operatingsystemmajrelease]}.*").with({
+      :ensure => 'present',
+    })
+  end
+
+  context 'when zol_version => 0.6.5.2' do
+    let(:facts) { facts.merge({:zol_version => '0.6.5.2'}) }
+
+    it do
+      should contain_yum__versionlock("0:zfs-0.6.5.2-1.el#{facts[:operatingsystemmajrelease]}.*")
+    end
+  end
+
+  context 'when zol_version => 0.6.5.2 and version => 0.6.5.4' do
+    let(:params) {{ :version => '0.6.5.4' }}
+    let(:facts) { facts.merge({:zol_version => '0.6.5.2'}) }
+
+    it do
+      should contain_yum__versionlock("0:zfs-0.6.5.4-1.el#{facts[:operatingsystemmajrelease]}.*")
+    end
+  end
+
+  context 'when version => 0.6.5.4' do
+    let(:params) {{ :version => '0.6.5.4' }}
+
+    it do
+      should contain_yum__versionlock("0:zfs-0.6.5.4-1.el#{facts[:operatingsystemmajrelease]}.*")
+    end
+  end
+
   context 'with baseurl => http://foo.bar/zfs' do
-    let(:pre_condition) { "class { 'zfsonlinux': baseurl => 'http://foo.bar/zfs' }" }
+    let(:params) {{ :baseurl => 'http://foo.bar/zfs' }}
 
     it { should contain_yumrepo('zfs').with_baseurl('http://foo.bar/zfs') }
   end
 
   context 'with testing_baseurl => http://foo.bar/zfs-testing' do
-    let(:pre_condition) { "class { 'zfsonlinux': testing_baseurl => 'http://foo.bar/zfs-testing' }" }
+    let(:params) {{ :testing_baseurl => 'http://foo.bar/zfs-testing' }}
 
     it { should contain_yumrepo('zfs-testing').with_baseurl('http://foo.bar/zfs-testing') }
   end
 
   context 'with source_baseurl => http://foo.bar/zfs/SRPMS' do
-    let(:pre_condition) { "class { 'zfsonlinux': source_baseurl => 'http://foo.bar/zfs/SRPMS' }" }
+    let(:params) {{ :source_baseurl => 'http://foo.bar/zfs/SRPMS' }}
 
     it { should contain_yumrepo('zfs-source').with_baseurl('http://foo.bar/zfs/SRPMS') }
   end
 
   context 'with testing_source_baseurl => http://foo.bar/zfs-testing/SRPMS' do
-    let(:pre_condition) { "class { 'zfsonlinux': testing_source_baseurl => 'http://foo.bar/zfs-testing/SRPMS' }" }
+    let(:params) {{ :testing_source_baseurl => 'http://foo.bar/zfs-testing/SRPMS' }}
 
     it { should contain_yumrepo('zfs-testing-source').with_baseurl('http://foo.bar/zfs-testing/SRPMS') }
   end

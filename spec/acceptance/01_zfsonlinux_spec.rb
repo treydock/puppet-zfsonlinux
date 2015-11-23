@@ -29,34 +29,42 @@ describe 'zfsonlinux class:' do
     end
   end
 
+  describe service('zfs-import') do
+    it { should be_running }
+    it { should be_enabled }
+  end
+
+  describe service('zfs-mount') do
+    it { should be_running }
+    it { should be_enabled }
+  end
+
+  describe service('zfs-share') do
+    it { should be_running }
+    it { should be_enabled }
+  end
+
+  describe service('zfs-zed') do
+    it { should be_running }
+    it { should be_enabled }
+  end
+
   describe file('/etc/zfs/zed.d/zed.rc') do
     it { should be_file }
-    it { should be_mode 644 }
+    it { should be_mode 600 }
     it { should be_owned_by 'root' }
     it { should be_grouped_into 'root' }
-    it do
-      content = subject.content.split(/\n/).reject { |c| c =~ /^$|^#/ }
-      expected = [
-        'ZED_DEBUG_LOG=/tmp/zed.debug.log',
-        'ZED_EMAIL_VERBOSE=0',
-        'ZED_EMAIL_INTERVAL_SECS=3600',
-        'ZED_LOCKDIR=/var/lock',
-        'ZED_RUNDIR=/var/run',
-        'ZED_SYSLOG_PRIORITY=daemon.notice',
-        'ZED_SYSLOG_TAG=zed',
-        'ZED_SPARE_ON_IO_ERRORS=0',
-        'ZED_SPARE_ON_CHECKSUM_ERRORS=0',
-      ]
-      expect(content).to match_array(expected)
-    end
-  end
-
-  describe file('/etc/rc.local') do
-    its(:content) { should match /^\/sbin\/zed$/ }
-  end
-
-  describe process('zed') do
-    it { should be_running }
+    its(:content) { should match /^ZED_DEBUG_LOG=\/tmp\/zed.debug.log$/ }
+    its(:content) { should_not match /^ZED_EMAIL_ADDR.*$/ }
+    its(:content) { should match /^ZED_EMAIL_PROG=mail$/ }
+    its(:content) { should match /^ZED_LOCKDIR=\/var\/lock$/ }
+    its(:content) { should match /^ZED_NOTIFY_INTERVAL_SECS=3600$/ }
+    its(:content) { should match /^ZED_NOTIFY_VERBOSE=0$/ }
+    its(:content) { should match /^ZED_RUNDIR=\/var\/run$/ }
+    its(:content) { should match /^ZED_SPARE_ON_CHECKSUM_ERRORS=0$/ }
+    its(:content) { should match /^ZED_SPARE_ON_IO_ERRORS=0$/ }
+    its(:content) { should match /^ZED_SYSLOG_PRIORITY=daemon.notice$/ }
+    its(:content) { should match /^ZED_SYSLOG_TAG=zed$/ }
   end
 
   context "with zed parameters defined" do
@@ -75,22 +83,17 @@ describe 'zfsonlinux class:' do
     end
 
     describe file('/etc/zfs/zed.d/zed.rc') do
-      it do
-        content = subject.content.split(/\n/).reject { |c| c =~ /^$|^#/ }
-        expected = [
-          'ZED_DEBUG_LOG=/tmp/zed.debug.log',
-          'ZED_EMAIL=root',
-          'ZED_EMAIL_VERBOSE=0',
-          'ZED_EMAIL_INTERVAL_SECS=3600',
-          'ZED_LOCKDIR=/var/lock',
-          'ZED_RUNDIR=/var/run',
-          'ZED_SYSLOG_PRIORITY=daemon.notice',
-          'ZED_SYSLOG_TAG=zed',
-          'ZED_SPARE_ON_IO_ERRORS=1',
-          'ZED_SPARE_ON_CHECKSUM_ERRORS=10',
-        ]
-        expect(content).to match_array(expected)
-      end
+      its(:content) { should match /^ZED_DEBUG_LOG=\/tmp\/zed.debug.log$/ }
+      its(:content) { should match /^ZED_EMAIL_ADDR=root$/ }
+      its(:content) { should match /^ZED_EMAIL_PROG=mail$/ }
+      its(:content) { should match /^ZED_LOCKDIR=\/var\/lock$/ }
+      its(:content) { should match /^ZED_NOTIFY_INTERVAL_SECS=3600$/ }
+      its(:content) { should match /^ZED_NOTIFY_VERBOSE=0$/ }
+      its(:content) { should match /^ZED_RUNDIR=\/var\/run$/ }
+      its(:content) { should match /^ZED_SPARE_ON_CHECKSUM_ERRORS=0$/ }
+      its(:content) { should match /^ZED_SPARE_ON_IO_ERRORS=0$/ }
+      its(:content) { should match /^ZED_SYSLOG_PRIORITY=daemon.notice$/ }
+      its(:content) { should match /^ZED_SYSLOG_TAG=zed$/ }
     end
   end
 

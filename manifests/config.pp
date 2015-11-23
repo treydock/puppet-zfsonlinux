@@ -13,4 +13,12 @@ class zfsonlinux::config {
     mode    => '0644',
   }
 
+  if versioncmp($::zfsonlinux::version, '0.6.5') >= 0 {
+    $_service_configs_defaults = {
+      'ensure' => 'present',
+      'target' => $::zfsonlinux::service_config_path,
+    }
+    create_resources(shellvar, $::zfsonlinux::service_configs, $_service_configs_defaults)
+  }
+
 }

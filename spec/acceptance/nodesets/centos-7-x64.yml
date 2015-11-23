@@ -1,5 +1,5 @@
 HOSTS:
-  centos-70-x64:
+  centos-7-x64:
     roles:
       - master
     platform: el-7-x86_64
@@ -7,4 +7,5 @@ HOSTS:
     box_url: https://vagrantcloud.com/puppetlabs/boxes/centos-7.0-64-nocm
     hypervisor: vagrant
 CONFIG:
+  log_level: debug
   type: foss
