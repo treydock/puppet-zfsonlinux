@@ -4,9 +4,9 @@ Release notes for the treydock-zfsonlinux module.
 
 ------------------------------------------
 
-#### 2014-12-14 Release 1.0.0
+#### 2015-11-23 Release 1.0.0
 
-This release is a major rewrite of this module.  It is written with ZFS on Linux 0.6.3 in mind.
+This release is a major rewrite of this module.  Primary ZFS on Linux version supported is 0.6.3.  Version 0.6.4 has also been tested but parameters like `manage_zed_service` should not use the default value.
 
 Detailed Changes:
 
@@ -24,6 +24,8 @@ Detailed Changes:
 * Remove mk\_vdev\_alias.rb script was it was a bit too site-specific
 * Update module dependency versions to be less restrictive
 * Remove dependency on augeasproviders
+* Remove dependency on gpg_key
+* Remove management of the GPG key used for zfsonlinux EL repositories
 * Refactor unit tests to match changes to module
 * Add beaker-rspec acceptance tests
 * Update README.md

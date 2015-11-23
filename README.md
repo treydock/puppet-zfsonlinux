@@ -23,8 +23,8 @@ This module is intended to streamlines the installation and configuration of ZFS
 ZFS on Linux Versions     | <= 0.6.2 |  0.6.3  | 0.6.4   | > 0.6.4     |
 :-------------------------|:--------:|:-------:|:-------:|:-----------:|
 **puppet-zfsonlinux 0.x** | **yes**  | no      | no      | no          |
-**puppet-zfsonlinux 1.x** | no       | **yes** | **yes** | **unknown** |
-**puppet-zfsonlinux 2.x** | no       | **yes** | **yes** | **unknown** |
+**puppet-zfsonlinux 1.x** | no       | **yes** | **yes** | **no**      |
+**puppet-zfsonlinux 2.x** | no       | **yes** | **yes** | **yes**     |
 
 ### ZED
 
@@ -64,6 +64,12 @@ This example sets the 'zfs\_arc\_max' to 240457728
       tunables  => { 'zfs_arc_max' => '240457728' },
     }
 
+This example sets the ARC to a percentage of memory.
+
+    class { 'zfsonlinux':
+      zfs_arc_max_percent => '25',
+    }
+
 Configure the ZED to send emails to root and to send emails regardless of pool health.
 
     class { 'zfsonlinux':
@@ -98,6 +104,12 @@ Configure the ZED to replace a drive with a hot spare after 1 I/O error or 10 ch
 ### Parameters
 
 #### zfsonlinux
+
+#####`release_url`
+
+The URL for zfs-release RPM.  This is used to install the necessary GPG key.
+
+Defaults to `http://archive.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm`
 
 #####`baseurl`
 

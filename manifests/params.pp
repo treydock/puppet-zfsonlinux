@@ -4,6 +4,7 @@ class zfsonlinux::params {
   case $::osfamily {
     'RedHat': {
       if versioncmp($::operatingsystemmajrelease, '6') >= 0 {
+        $release_url            = "http://archive.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm"
         $baseurl                = "http://archive.zfsonlinux.org/epel/${::operatingsystemmajrelease}/${::architecture}/"
         $source_baseurl         = "http://archive.zfsonlinux.org/epel/${::operatingsystemmajrelease}/SRPMS/"
         $testing_baseurl        = "http://archive.zfsonlinux.org/epel-testing/${::operatingsystemmajrelease}/${::architecture}/"

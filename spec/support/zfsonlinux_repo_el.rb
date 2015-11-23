@@ -5,19 +5,11 @@ shared_examples_for 'zfsonlinux::repo::el' do
   it { should contain_class('zfsonlinux') }
 
   it do
-    should contain_file('/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux').with({
-      :ensure  => 'file',
-      :source  => 'puppet:///modules/zfsonlinux/RPM-GPG-KEY-zfsonlinux',
-      :owner   => 'root',
-      :group   => 'root',
-      :mode    => '0644',
-    })
-  end
-
-  it do
-    should contain_gpg_key('zfsonlinux').with({
-      :path    => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-      :before  => ['Yumrepo[zfs]', 'Yumrepo[zfs-source]', 'Yumrepo[zfs-testing]', 'Yumrepo[zfs-testing-source]'],
+    should contain_exec('RPM-GPG-KEY-zfsonlinux').with({
+      :path     => '/usr/bin:/bin:/usr/sbin:/sbin',
+      :command  => "wget -qO- http://archive.zfsonlinux.org/epel/zfs-release.el#{facts[:operatingsystemmajrelease]}.noarch.rpm | rpm2cpio - | cpio -i --quiet --to-stdout ./etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux > /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux",
+      :creates  => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+      :before   => ['Yumrepo[zfs]', 'Yumrepo[zfs-source]', 'Yumrepo[zfs-testing]', 'Yumrepo[zfs-testing-source]'],
     })
   end
 
