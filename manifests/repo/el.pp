@@ -3,17 +3,11 @@ class zfsonlinux::repo::el {
 
   include ::zfsonlinux
 
-  file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
-    ensure => 'file',
-    source => 'puppet:///modules/zfsonlinux/RPM-GPG-KEY-zfsonlinux',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-  }
-
-  gpg_key { 'zfsonlinux':
-    path   => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-    before => Yumrepo['zfs','zfs-source','zfs-testing','zfs-testing-source'],
+  exec { 'RPM-GPG-KEY-zfsonlinux':
+    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+    command => "wget -qO- ${zfsonlinux::release_url} | rpm2cpio - | cpio -i --quiet --to-stdout ./etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux > /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux",
+    creates => '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+    before  => Yumrepo['zfs','zfs-source','zfs-testing','zfs-testing-source'],
   }
 
   yumrepo { 'zfs':

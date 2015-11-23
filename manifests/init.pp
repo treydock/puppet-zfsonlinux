@@ -1,5 +1,6 @@
 # Class: zfsonlinux: See README.md for documentation
 class zfsonlinux (
+  $release_url                  = $zfsonlinux::params::release_url,
   $baseurl                      = $zfsonlinux::params::baseurl,
   $source_baseurl               = $zfsonlinux::params::source_baseurl,
   $testing_baseurl              = $zfsonlinux::params::testing_baseurl,

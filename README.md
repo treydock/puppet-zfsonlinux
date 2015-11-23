@@ -64,6 +64,12 @@ This example sets the 'zfs\_arc\_max' to 240457728
       tunables  => { 'zfs_arc_max' => '240457728' },
     }
 
+This example sets the ARC to a percentage of memory.
+
+    class { 'zfsonlinux':
+      zfs_arc_max_percent => '25',
+    }
+
 Configure the ZED to send emails to root and to send emails regardless of pool health.
 
     class { 'zfsonlinux':
