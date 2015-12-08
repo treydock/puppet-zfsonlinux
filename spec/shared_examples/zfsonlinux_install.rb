@@ -1,8 +1,11 @@
 shared_examples 'zfsonlinux::install' do |facts|
+  it { should contain_class('epel') }
+
   it do
     should contain_package('zfs').with({
-      :ensure  => "0.6.5.3-1.el#{facts[:operatingsystemmajrelease]}",
-      :name    => 'zfs',
+      :ensure   => "0.6.5.3-1.el#{facts[:operatingsystemmajrelease]}",
+      :name     => 'zfs',
+      :require  => 'Yumrepo[epel]',
     })
   end
 

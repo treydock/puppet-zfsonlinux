@@ -20,8 +20,7 @@ describe 'zfsonlinux' do
       it { should contain_class('zfsonlinux::params') }
 
       it { should contain_anchor('zfsonlinux::begin').that_comes_before('Class[zfsonlinux::repo::el]') }
-      it { should contain_class('zfsonlinux::repo::el').that_comes_before('Yumrepo[epel]') }
-      it { should contain_yumrepo('epel').that_comes_before('Class[zfsonlinux::install]') }
+      it { should contain_class('zfsonlinux::repo::el').that_comes_before('Class[zfsonlinux::install]') }
       it { should contain_class('zfsonlinux::install').that_comes_before('Class[zfsonlinux::config]') }
       it { should contain_class('zfsonlinux::config').that_comes_before('Class[zfsonlinux::zed]') }
       it { should contain_class('zfsonlinux::zed').that_comes_before('Class[zfsonlinux::service]') }

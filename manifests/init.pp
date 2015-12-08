@@ -121,11 +121,9 @@ class zfsonlinux (
   case $::osfamily {
     'RedHat': {
       include ::zfsonlinux::repo::el
-      include ::epel
 
       Anchor['zfsonlinux::begin']->
       Class['zfsonlinux::repo::el']->
-      Yumrepo['epel']->
       Class['zfsonlinux::install']->
       Class['zfsonlinux::config']->
       Class['zfsonlinux::zed']->
