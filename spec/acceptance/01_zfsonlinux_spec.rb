@@ -7,13 +7,23 @@ describe 'zfsonlinux class:' do
         class { 'zfsonlinux': tunables => {'zfs_arc_max' => '240457728'} }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      if default['hypervisor'] =~ /docker/
+        apply_manifest(pp, :catch_failures => false)
+      else
+        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp, :catch_changes => true)
+      end
     end
   end
 
-  describe file('/sys/module/zfs/parameters/zfs_arc_max') do
-    it { should contain "240457728" }
+  describe file('/etc/modprobe.d/zfs.conf') do
+    its(:content) { should match /^options zfs zfs_arc_max=240457728 $/ }
+  end
+
+  if default['hypervisor'] !~ /docker/
+    describe file('/sys/module/zfs/parameters/zfs_arc_max') do
+      it { should contain "240457728" }
+    end
   end
 
   describe command("/sbin/zpool create -f tank mirror sdb sdc") do
@@ -90,8 +100,8 @@ describe 'zfsonlinux class:' do
       its(:content) { should match /^ZED_NOTIFY_INTERVAL_SECS=3600$/ }
       its(:content) { should match /^ZED_NOTIFY_VERBOSE=0$/ }
       its(:content) { should match /^ZED_RUNDIR=\/var\/run$/ }
-      its(:content) { should match /^ZED_SPARE_ON_CHECKSUM_ERRORS=0$/ }
-      its(:content) { should match /^ZED_SPARE_ON_IO_ERRORS=0$/ }
+      its(:content) { should match /^ZED_SPARE_ON_CHECKSUM_ERRORS=10$/ }
+      its(:content) { should match /^ZED_SPARE_ON_IO_ERRORS=1$/ }
       its(:content) { should match /^ZED_SYSLOG_PRIORITY=daemon.notice$/ }
       its(:content) { should match /^ZED_SYSLOG_TAG=zed$/ }
     end
