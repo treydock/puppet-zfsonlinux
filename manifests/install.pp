@@ -19,4 +19,12 @@ class zfsonlinux::install {
     require => $_package_require,
   }
 
+  if $::zfsonlinux::install_devel_package {
+    package { 'libzfs2-devel':
+      ensure  => $::zfsonlinux::_devel_package_ensure,
+      name    => $::zfsonlinux::devel_package_name,
+      require => Package['zfs'],
+    }
+  }
+
 }

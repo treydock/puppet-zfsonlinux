@@ -7,6 +7,8 @@ class zfsonlinux (
   $testing_baseurl              = $zfsonlinux::params::testing_baseurl,
   $testing_source_baseurl       = $zfsonlinux::params::testing_source_baseurl,
   $package_name                 = $zfsonlinux::params::package_name,
+  $devel_package_name           = $zfsonlinux::params::devel_package_name,
+  $install_devel_package        = false,
   $service_ensure               = 'running',
   $service_enable               = true,
   $service_name                 = $zfsonlinux::params::service_name,
@@ -35,6 +37,7 @@ class zfsonlinux (
   $zfs_arc_max_percent          = undef,
 ) inherits zfsonlinux::params {
 
+  validate_bool($install_devel_package)
   validate_bool($manage_zed, $manage_zed_service, $enable_zed)
   validate_bool($enable_import_service, $enable_mount_service, $enable_share_service)
   validate_hash($service_configs, $tunables)
@@ -52,8 +55,10 @@ class zfsonlinux (
   # Avoid accidental upgrades to ZFS
   if $::zol_version {
     $_package_ensure = 'present'
+    $_devel_package_ensure = "${::zol_version}-1.el${::operatingsystemmajrelease}"
   } else {
     $_package_ensure = $_package_version
+    $_devel_package_ensure = $_package_version
   }
 
   if $enable_zed {

@@ -16,6 +16,7 @@ class zfsonlinux::params {
         $testing_baseurl        = "http://archive.zfsonlinux.org/epel-testing/${::operatingsystemmajrelease}/${::architecture}/"
         $testing_source_baseurl = "http://archive.zfsonlinux.org/epel-testing/${::operatingsystemmajrelease}/SRPMS/"
         $package_name           = 'zfs'
+        $devel_package_name     = 'libzfs2-devel'
         $service_name           = 'zfs'
         $service_hasstatus      = false
         $service_hasrestart     = true

@@ -141,6 +141,14 @@ Default is OS specific.
 
 The name of the zfs package to install. Default is OS specific.
 
+#####`devel_package_name`
+
+The name of the zfs devel (libzfs2-devel) package to install. Default is OS specific.
+
+#####`install_devel_package`
+
+Boolean that determines if `devel_package_name` is installed.  Defaults to `false`
+
 #####`service_ensure`
 
 The zfs service ensure value. Default is 'running'.
@@ -161,9 +169,7 @@ The name of the zfs service. Default is OS specific.
 
 #####`service_hasstatus`
 
-The zfs service hasstatus value. Default is OS specific.
-
-**Only applies to ZoL < 0.6.5**
+The zfs service hasstatus value for ZoL < 0.6.5. Sets the hasstatus value for zfs-import on ZoL >= 0.6.5.  Default is OS specific.
 
 #####`service_hasrestart`
 
@@ -173,9 +179,7 @@ The zfs service hasrestart value. Default is OS specific.
 
 #####`service_status`
 
-The zfs service status value. Default is OS specific.
-
-**Only applies to ZoL < 0.6.5**
+The zfs service status value for ZoL < 0.6.5. Sets the status value for zfs-import on ZoL >= 0.6.5. Default is OS specific.
 
 #####`enable_import_service`
 
